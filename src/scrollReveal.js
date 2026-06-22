@@ -1,23 +1,30 @@
+/**
+ * Sets up an IntersectionObserver that adds `.is-visible` to any
+ * section/element containing [data-reveal] children once it enters
+ * the viewport, triggering the CSS reveal animations defined in
+ * style.css. Re-observes dynamically injected content (team/projects)
+ * by being called again after render, or via the mutation-safe
+ * `observeAll` helper below.
+ */
 export function setupScrollReveal() {
-  const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-  if (reduceMotion) {
-    document.querySelectorAll('[data-reveal]').forEach((el) => el.classList.add('is-visible'));
-    return () => {};
-  }
-
-  const observer = new IntersectionObserver((entries) => {
-    entries.forEach((entry) => {
-      if (entry.isIntersecting) {
-        entry.target.classList.add('is-visible');
-        observer.unobserve(entry.target);
-      }
-    });
-  }, { threshold: 0.14, rootMargin: '0px 0px -80px 0px' });
+  const observer = new IntersectionObserver(
+    (entries) => {
+      entries.forEach((entry) => {
+        if (entry.isIntersecting) {
+          entry.target.classList.add('is-visible');
+          observer.unobserve(entry.target);
+        }
+      });
+    },
+    { threshold: 0.15, rootMargin: '0px 0px -60px 0px' }
+  );
 
   function observeAll() {
-    document.querySelectorAll('[data-reveal], .team-card, .project-card').forEach((el) => observer.observe(el));
+    document
+      .querySelectorAll('section, .team-card, .project-card')
+      .forEach((el) => observer.observe(el));
   }
 
   observeAll();
-  return observeAll;
+  return observeAll; // call again after injecting dynamic content
 }
