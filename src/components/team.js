@@ -1,88 +1,65 @@
-import { initHeroScene } from './three/heroScene.js';
-import { renderTeam }    from './components/team.js';
-import { renderProjects } from './components/projects.js';
-import { setupScrollReveal } from './scrollReveal.js';
+import { team } from '../data/team.js';
 
-// ---------- 1. Three.js hero background ----------
-const canvas = document.getElementById('heroCanvas');
-if (canvas) initHeroScene(canvas);
-
-// ---------- 2. Render dynamic content ----------
-renderTeam();
-renderProjects();
-
-// ---------- 3. Scroll-triggered reveals ----------
-const reobserve = setupScrollReveal();
-reobserve();
-
-// ---------- 4. Hero load-in sequence ----------
-requestAnimationFrame(() => {
-  document.querySelector('.hero').classList.add('is-loaded');
-});
-
-// ---------- 5. Nav background on scroll ----------
-const nav = document.getElementById('nav');
-function onScrollNav() {
-  if (window.scrollY > 40) nav.classList.add('scrolled');
-  else nav.classList.remove('scrolled');
+export function renderTeam() {
+  const grid = document.getElementById('teamGrid');
+  grid.innerHTML = team
+    .map(
+      (member, i) => `
+    <div class="team-card" data-reveal style="animation-delay:${i * 0.08}s">
+      <div class="team-card-top">
+        <div class="team-avatar">${member.initials}</div>
+        <div>
+          <div class="team-name">${escapeHtml(member.name)}</div>
+          <div class="team-role">${escapeHtml(member.role)}</div>
+        </div>
+      </div>
+      <p class="team-quote">&ldquo;${escapeHtml(member.quote)}&rdquo;</p>
+      <p class="team-bio">${escapeHtml(member.bio)}</p>
+      ${member.venture ? renderVentureBadge(member.venture) : ''}
+      <div class="team-links">
+        ${
+          member.github
+            ? `<a class="team-link" href="${member.github}" target="_blank" rel="noopener">GitHub &rarr;</a>`
+            : ''
+        }
+        ${
+          member.linkedin
+            ? `<a class="team-link" href="${member.linkedin}" target="_blank" rel="noopener">LinkedIn &rarr;</a>`
+            : ''
+        }
+      </div>
+    </div>
+  `
+    )
+    .join('');
 }
-window.addEventListener('scroll', onScrollNav, { passive: true });
 
-// ---------- 6. Scroll progress bar ----------
-const progressBar = document.getElementById('scrollProgress');
-function onScrollProgress() {
-  const doc     = document.documentElement;
-  const scrolled = (doc.scrollTop / (doc.scrollHeight - doc.clientHeight)) * 100;
-  progressBar.style.width = `${scrolled}%`;
+function escapeHtml(str) {
+  const div = document.createElement('div');
+  div.textContent = str;
+  return div.innerHTML;
 }
-window.addEventListener('scroll', onScrollProgress, { passive: true });
 
-// ---------- 7. Custom cursor ----------
-const cursorDot  = document.getElementById('cursorDot');
-const cursorRing = document.getElementById('cursorRing');
-let ringX = 0, ringY = 0, mouseX = 0, mouseY = 0;
+const CALENDAR_ICON = `
+  <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+    <rect x="3" y="5" width="18" height="16" rx="2"></rect>
+    <line x1="3" y1="10" x2="21" y2="10"></line>
+    <line x1="8" y1="3" x2="8" y2="7"></line>
+    <line x1="16" y1="3" x2="16" y2="7"></line>
+    <circle cx="8.5" cy="14.5" r="1.1" fill="currentColor" stroke="none"></circle>
+    <circle cx="12.5" cy="14.5" r="1.1" fill="currentColor" stroke="none"></circle>
+    <circle cx="16.5" cy="14.5" r="1.1" fill="currentColor" stroke="none"></circle>
+  </svg>
+`;
 
-window.addEventListener('mousemove', (e) => {
-  mouseX = e.clientX;
-  mouseY = e.clientY;
-  cursorDot.style.left = `${mouseX}px`;
-  cursorDot.style.top  = `${mouseY}px`;
-});
-
-function animateCursorRing() {
-  ringX += (mouseX - ringX) * 0.14;
-  ringY += (mouseY - ringY) * 0.14;
-  cursorRing.style.left = `${ringX}px`;
-  cursorRing.style.top  = `${ringY}px`;
-  requestAnimationFrame(animateCursorRing);
+function renderVentureBadge(venture) {
+  return `
+    <a class="venture-badge" href="${venture.url}" target="_blank" rel="noopener">
+      <span class="venture-badge-icon">${CALENDAR_ICON}</span>
+      <span class="venture-badge-text">
+        <strong>${escapeHtml(venture.role)}</strong> &middot; ${escapeHtml(venture.name)}
+      </span>
+      <span class="venture-badge-arrow">&rarr;</span>
+    </a>
+  `;
 }
-animateCursorRing();
-
-document.addEventListener('mouseover', (e) => {
-  if (e.target.closest('a, button, .pillar, .project-card, .team-card')) {
-    cursorRing.classList.add('hover');
-  }
-});
-document.addEventListener('mouseout', (e) => {
-  if (e.target.closest('a, button, .pillar, .project-card, .team-card')) {
-    cursorRing.classList.remove('hover');
-  }
-});
-
-// ---------- 8. Smooth-scroll for nav anchors ----------
-document.querySelectorAll('a[href^="#"]').forEach((link) => {
-  link.addEventListener('click', (e) => {
-    const target = document.querySelector(link.getAttribute('href'));
-    if (target) {
-      e.preventDefault();
-      target.scrollIntoView({ behavior: 'smooth', block: 'start' });
-    }
-  });
-});
-
-// ---------- 9. Staggered reveal delays for child elements ----------
-document.querySelectorAll('[data-reveal]').forEach((el, i) => {
-  if (!el.style.animationDelay) {
-    el.style.animationDelay = `${i * 0.06}s`;
-  }
-});
