@@ -1,175 +1,92 @@
 import * as THREE from 'three';
 
-/**
- * Hero scene: a field of glowing gold embers/particles drifting
- * in 3D space with a subtle parallax response to mouse movement
- * and scroll. Built for atmosphere, not literal imagery — fits
- * the "molten gold in the dark" identity without being kitschy.
- */
 export function initHeroScene(canvas) {
-  const renderer = new THREE.WebGLRenderer({
-    canvas,
-    antialias: true,
-    alpha: true,
-  });
-  renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+  const renderer = new THREE.WebGLRenderer({ canvas, antialias: true, alpha: true, powerPreference: 'high-performance' });
+  renderer.setPixelRatio(Math.min(window.devicePixelRatio, 1.7));
   renderer.setSize(window.innerWidth, window.innerHeight);
 
   const scene = new THREE.Scene();
-  const camera = new THREE.PerspectiveCamera(
-    55,
-    window.innerWidth / window.innerHeight,
-    0.1,
-    100
-  );
-  camera.position.z = 9;
+  const camera = new THREE.PerspectiveCamera(52, window.innerWidth / window.innerHeight, 0.1, 100);
+  camera.position.z = 8;
 
-  // ---------- particle field ----------
-  const PARTICLE_COUNT = 900;
-  const positions = new Float32Array(PARTICLE_COUNT * 3);
-  const sizes = new Float32Array(PARTICLE_COUNT);
-  const speeds = new Float32Array(PARTICLE_COUNT);
-  const colorMix = new Float32Array(PARTICLE_COUNT);
+  const count = window.innerWidth < 700 ? 420 : 760;
+  const positions = new Float32Array(count * 3);
+  const sizes = new Float32Array(count);
+  const seeds = new Float32Array(count);
 
-  for (let i = 0; i < PARTICLE_COUNT; i++) {
-    const radius = 6 + Math.random() * 7;
-    const theta = Math.random() * Math.PI * 2;
-    const phi = Math.acos(2 * Math.random() - 1);
-
-    positions[i * 3] = radius * Math.sin(phi) * Math.cos(theta);
-    positions[i * 3 + 1] = radius * Math.sin(phi) * Math.sin(theta) * 0.6;
-    positions[i * 3 + 2] = radius * Math.cos(phi) * 0.5 - 2;
-
-    sizes[i] = Math.random() * 2.4 + 0.4;
-    speeds[i] = Math.random() * 0.4 + 0.08;
-    colorMix[i] = Math.random();
+  for (let i = 0; i < count; i++) {
+    positions[i * 3] = (Math.random() - 0.5) * 16;
+    positions[i * 3 + 1] = (Math.random() - 0.5) * 9;
+    positions[i * 3 + 2] = (Math.random() - 0.5) * 7;
+    sizes[i] = Math.random() * 2.2 + 0.7;
+    seeds[i] = Math.random();
   }
 
   const geometry = new THREE.BufferGeometry();
   geometry.setAttribute('position', new THREE.BufferAttribute(positions, 3));
   geometry.setAttribute('size', new THREE.BufferAttribute(sizes, 1));
-  geometry.setAttribute('colorMix', new THREE.BufferAttribute(colorMix, 1));
+  geometry.setAttribute('seed', new THREE.BufferAttribute(seeds, 1));
 
   const material = new THREE.ShaderMaterial({
     transparent: true,
     depthWrite: false,
     blending: THREE.AdditiveBlending,
-    uniforms: {
-      uTime: { value: 0 },
-      uPixelRatio: { value: Math.min(window.devicePixelRatio, 2) },
-    },
+    uniforms: { uTime: { value: 0 }, uPixelRatio: { value: Math.min(window.devicePixelRatio, 1.7) } },
     vertexShader: `
-      attribute float size;
-      attribute float colorMix;
-      varying float vColorMix;
-      varying float vAlpha;
-      uniform float uTime;
-      uniform float uPixelRatio;
-
-      void main() {
-        vColorMix = colorMix;
-        vec3 pos = position;
-
-        // gentle drifting motion, unique per-particle via colorMix as seed
-        pos.y += sin(uTime * 0.3 + colorMix * 20.0) * 0.4;
-        pos.x += cos(uTime * 0.2 + colorMix * 14.0) * 0.3;
-
-        vec4 mvPosition = modelViewMatrix * vec4(pos, 1.0);
-        float dist = -mvPosition.z;
-        vAlpha = smoothstep(18.0, 4.0, dist);
-
-        gl_PointSize = size * uPixelRatio * (12.0 / dist);
-        gl_Position = projectionMatrix * mvPosition;
-      }
-    `,
+      attribute float size; attribute float seed; varying float vSeed; uniform float uTime; uniform float uPixelRatio;
+      void main(){
+        vSeed=seed; vec3 p=position;
+        p.x += sin(uTime*.22 + seed*18.0)*.22; p.y += cos(uTime*.28 + seed*13.0)*.18;
+        vec4 mv=modelViewMatrix*vec4(p,1.0); gl_PointSize=size*uPixelRatio*(18.0/-mv.z); gl_Position=projectionMatrix*mv;
+      }`,
     fragmentShader: `
-      varying float vColorMix;
-      varying float vAlpha;
-
-      void main() {
-        vec2 uv = gl_PointCoord.xy - 0.5;
-        float dist = length(uv);
-        float glow = smoothstep(0.5, 0.0, dist);
-        glow = pow(glow, 1.6);
-
-        vec3 hot = vec3(1.0, 0.48, 0.1);   // ember orange
-        vec3 gold = vec3(1.0, 0.71, 0.15); // gold
-        vec3 color = mix(gold, hot, vColorMix);
-
-        gl_FragColor = vec4(color, glow * vAlpha * 0.9);
-      }
-    `,
+      varying float vSeed;
+      void main(){
+        vec2 uv=gl_PointCoord-.5; float d=length(uv); float a=pow(smoothstep(.5,0.,d),2.2);
+        vec3 deep=vec3(.06,.23,.72); vec3 electric=vec3(.22,.74,.97); vec3 c=mix(deep,electric,vSeed);
+        gl_FragColor=vec4(c,a*.58);
+      }`,
   });
 
-  const points = new THREE.Points(geometry, material);
-  scene.add(points);
+  const particles = new THREE.Points(geometry, material);
+  scene.add(particles);
 
-  // ---------- subtle wireframe lattice for depth ----------
-  const latticeGeo = new THREE.IcosahedronGeometry(5.4, 1);
-  const latticeMat = new THREE.MeshBasicMaterial({
-    color: 0xc98a00,
-    wireframe: true,
-    transparent: true,
-    opacity: 0.06,
-  });
-  const lattice = new THREE.Mesh(latticeGeo, latticeMat);
-  lattice.position.set(0, -0.3, -3);
-  scene.add(lattice);
+  const ringGeo = new THREE.TorusGeometry(2.8, 0.006, 8, 160);
+  const ringMat = new THREE.MeshBasicMaterial({ color: 0x2563eb, transparent: true, opacity: 0.22 });
+  const ring = new THREE.Mesh(ringGeo, ringMat);
+  ring.rotation.x = Math.PI * 0.62;
+  ring.position.z = -1.7;
+  scene.add(ring);
 
-  // ---------- interaction state ----------
-  const mouse = { x: 0, y: 0 };
-  const targetRotation = { x: 0, y: 0 };
-  let scrollFactor = 0;
-
-  window.addEventListener('mousemove', (e) => {
-    mouse.x = (e.clientX / window.innerWidth) * 2 - 1;
-    mouse.y = (e.clientY / window.innerHeight) * 2 - 1;
-  });
-
-  window.addEventListener('scroll', () => {
-    scrollFactor = Math.min(window.scrollY / window.innerHeight, 1.4);
-  });
-
+  const state = { mx: 0, my: 0, sx: 0, sy: 0, scroll: 0 };
+  window.addEventListener('pointermove', (event) => {
+    state.mx = (event.clientX / window.innerWidth - 0.5) * 2;
+    state.my = (event.clientY / window.innerHeight - 0.5) * 2;
+  }, { passive: true });
+  window.addEventListener('scroll', () => { state.scroll = Math.min(window.scrollY / window.innerHeight, 1.5); }, { passive: true });
   window.addEventListener('resize', () => {
     camera.aspect = window.innerWidth / window.innerHeight;
     camera.updateProjectionMatrix();
+    renderer.setPixelRatio(Math.min(window.devicePixelRatio, 1.7));
     renderer.setSize(window.innerWidth, window.innerHeight);
   });
 
-  // ---------- render loop ----------
   const clock = new THREE.Clock();
-
   function animate() {
     requestAnimationFrame(animate);
-    const elapsed = clock.getElapsedTime();
-
-    material.uniforms.uTime.value = elapsed;
-
-    targetRotation.y += (mouse.x * 0.3 - targetRotation.y) * 0.04;
-    targetRotation.x += (-mouse.y * 0.2 - targetRotation.x) * 0.04;
-
-    points.rotation.y = targetRotation.y + elapsed * 0.015;
-    points.rotation.x = targetRotation.x;
-    lattice.rotation.y = elapsed * 0.02;
-    lattice.rotation.x = elapsed * 0.01;
-
-    // scroll pushes camera "through" the field
-    camera.position.z = 9 - scrollFactor * 5;
-    camera.position.y = scrollFactor * -1.2;
-    points.position.y = scrollFactor * 1.5;
-
+    const time = clock.getElapsedTime();
+    material.uniforms.uTime.value = time;
+    state.sx += (state.mx - state.sx) * 0.045;
+    state.sy += (state.my - state.sy) * 0.045;
+    particles.rotation.y = time * 0.018 + state.sx * 0.18;
+    particles.rotation.x = state.sy * -0.12;
+    particles.position.y = state.scroll * 0.9;
+    ring.rotation.z = time * 0.05;
+    ring.rotation.y = state.sx * 0.22;
+    camera.position.z = 8 - state.scroll * 2.4;
     renderer.render(scene, camera);
   }
-
   animate();
 
-  return {
-    dispose() {
-      geometry.dispose();
-      material.dispose();
-      latticeGeo.dispose();
-      latticeMat.dispose();
-      renderer.dispose();
-    },
-  };
+  return { dispose() { geometry.dispose(); material.dispose(); ringGeo.dispose(); ringMat.dispose(); renderer.dispose(); } };
 }

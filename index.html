@@ -3,169 +3,131 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Hash Browns — Cybersecurity · CyberPatriot · Hackathon</title>
-  <meta name="description" content="Hash Browns — student cybersecurity, CyberPatriot, and hackathon team. Always gold. Crispy and hot as hell." />
+  <title>Hash Browns — Premium Cybersecurity Studio</title>
+  <meta name="description" content="Hash Browns is a student cybersecurity and product studio building secure software, infrastructure, and competition-grade systems." />
   <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Space+Mono:ital,wght@0,400;0,700;1,400&family=Bebas+Neue&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Geist:wght@400;500;600;700;800&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="/src/style.css" />
 </head>
 <body>
+  <a class="skip-link" href="#main">Skip to content</a>
+  <div class="ambient-noise" aria-hidden="true"></div>
+  <div class="cursor-orb" id="cursorOrb" aria-hidden="true"></div>
+  <div class="scroll-progress" id="scrollProgress" aria-hidden="true"></div>
 
-  <!-- grain / noise overlay -->
-  <div class="grain"></div>
-
-  <!-- custom cursor -->
-  <div class="cursor-dot" id="cursorDot"></div>
-  <div class="cursor-ring" id="cursorRing"></div>
-
-  <!-- progress bar -->
-  <div class="scroll-progress" id="scrollProgress"></div>
-
-  <!-- nav -->
-  <nav class="nav" id="nav">
+  <nav class="nav" id="nav" aria-label="Primary navigation">
     <div class="nav-inner">
-      <a href="#top" class="nav-logo">HASH<span>BROWNS</span></a>
+      <a href="#top" class="nav-logo" aria-label="Hash Browns home">
+        <span class="logo-mark">HB</span><span>Hash Browns</span>
+      </a>
       <div class="nav-links">
-        <a href="#about" data-nav>About</a>
-        <a href="#team" data-nav>Team</a>
-        <a href="#projects" data-nav>Projects</a>
-        <a href="#contact" data-nav>Connect</a>
+        <a href="#about">Studio</a>
+        <a href="#team">Team</a>
+        <a href="#projects">Work</a>
+        <a href="#systems">System</a>
       </div>
-      <div class="nav-status">
-        <span class="status-dot"></span> SYSTEM ONLINE
-      </div>
+      <a class="nav-cta" href="#contact">Start a conversation</a>
     </div>
   </nav>
 
-  <!-- HERO -->
-  <section id="top" class="hero">
-    <canvas id="heroCanvas"></canvas>
-    <div class="hero-vignette"></div>
-    <div class="hero-scanline"></div>
-
-    <div class="hero-content">
-      <div class="hero-tag" data-reveal>
-        <span class="bracket">[</span> CYBERSECURITY &middot; CYBERPATRIOT &middot; HACKATHON <span class="bracket">]</span>
+  <main id="main">
+    <section id="top" class="hero" data-depth="0.12">
+      <canvas id="heroCanvas" aria-hidden="true"></canvas>
+      <div class="hero-gradient" aria-hidden="true"></div>
+      <div class="hero-grid" aria-hidden="true"></div>
+      <div class="floating-card floating-card-a" data-parallax="-28" aria-hidden="true">
+        <span class="eyebrow">Threat surface</span><strong>−43%</strong><small>hardening delta</small>
       </div>
-      <h1 class="hero-title">
-        <span class="line" data-reveal-title>HASH</span>
-        <span class="line gold" data-reveal-title>BROWNS</span>
-      </h1>
-      <p class="hero-sub" data-reveal>Always gold. Crispy and hot as hell.</p>
-      <p class="hero-desc" data-reveal>
-        We're a small team of student developers building things that matter to us —
-        fast, sharp, and without cutting corners. Cybersecurity runs through everything
-        we do. So does a stubborn refusal to ship anything ugly.
-      </p>
-      <div class="hero-cta" data-reveal>
-        <a href="#projects" class="btn btn-primary">View Our Work <span class="btn-arrow">&rarr;</span></a>
-        <a href="#team" class="btn btn-ghost">Meet The Team</a>
+      <div class="floating-card floating-card-b" data-parallax="34" aria-hidden="true">
+        <span class="pulse"></span><span>Secure build online</span>
       </div>
-    </div>
 
-    <div class="scroll-cue" data-reveal>
-      <span>SCROLL</span>
-      <div class="scroll-cue-line"></div>
-    </div>
-  </section>
-
-  <!-- TICKER -->
-  <div class="ticker">
-    <div class="ticker-track">
-      <span>THREAT INTELLIGENCE</span><span>&middot;</span>
-      <span>SYSTEMS ARCHITECTURE</span><span>&middot;</span>
-      <span>CYBERPATRIOT</span><span>&middot;</span>
-      <span>HACKATHONS</span><span>&middot;</span>
-      <span>PENETRATION TESTING</span><span>&middot;</span>
-      <span>ALWAYS GOLD</span><span>&middot;</span>
-      <span>THREAT INTELLIGENCE</span><span>&middot;</span>
-      <span>SYSTEMS ARCHITECTURE</span><span>&middot;</span>
-      <span>CYBERPATRIOT</span><span>&middot;</span>
-      <span>HACKATHONS</span><span>&middot;</span>
-      <span>PENETRATION TESTING</span><span>&middot;</span>
-      <span>ALWAYS GOLD</span><span>&middot;</span>
-    </div>
-  </div>
-
-  <!-- ABOUT / MANIFESTO -->
-  <section id="about" class="manifesto">
-    <div class="manifesto-grid">
-      <div class="manifesto-num" data-reveal>01</div>
-      <div class="manifesto-body">
-        <h2 class="section-title" data-reveal>WHO WE <span class="gold">ARE</span></h2>
-        <p class="manifesto-text" data-reveal>
-          Hash Browns started as a CyberPatriot team and grew into something bigger —
-          a crew that ships real software, breaks real systems (legally), and competes
-          like it actually matters. We don't do filler projects. Everything we build
-          has teeth.
-        </p>
-        <div class="manifesto-pillars">
-          <div class="pillar" data-reveal>
-            <div class="pillar-icon">⌁</div>
-            <h3>Security First</h3>
-            <p>Every line of code gets the attacker's read before it ships.</p>
-          </div>
-          <div class="pillar" data-reveal>
-            <div class="pillar-icon">▣</div>
-            <h3>Built to Scale</h3>
-            <p>Infrastructure that doesn't fall over when it matters most.</p>
-          </div>
-          <div class="pillar" data-reveal>
-            <div class="pillar-icon">◭</div>
-            <h3>No Ugly Ships</h3>
-            <p>If it isn't sharp, it doesn't go out the door.</p>
-          </div>
+      <div class="hero-content">
+        <div class="hero-kicker reveal-blur">Cybersecurity · product engineering · competitions</div>
+        <h1 class="hero-title reveal-blur">We design secure systems with unfair polish.</h1>
+        <p class="hero-desc reveal-blur">Hash Browns is a compact team shipping resilient software, cybersecurity research, and hackathon products that feel fast, considered, and production-ready.</p>
+        <div class="hero-actions reveal-blur">
+          <a href="#projects" class="btn btn-primary"><span>Explore the work</span><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12h14m-6-6 6 6-6 6"/></svg></a>
+          <a href="#team" class="btn btn-secondary"><span>Meet the team</span></a>
+        </div>
+        <div class="hero-metrics reveal-blur" aria-label="Team highlights">
+          <div><strong>04</strong><span>specialists</span></div>
+          <div><strong>24/7</strong><span>security mindset</span></div>
+          <div><strong>0</strong><span>ugly ships</span></div>
         </div>
       </div>
-    </div>
-  </section>
+    </section>
 
-  <!-- TEAM -->
-  <section id="team" class="team-section">
-    <h2 class="section-title center" data-reveal>THE <span class="gold">TEAM</span></h2>
-    <p class="section-sub center" data-reveal>Four people. One standard.</p>
-    <div class="team-grid" id="teamGrid"></div>
-  </section>
-
-  <!-- PROJECTS -->
-  <section id="projects" class="projects-section">
-    <div class="projects-header">
-      <h2 class="section-title" data-reveal>OUR <span class="gold">WORK</span></h2>
-      <p class="section-sub" data-reveal>Live builds. Real repos. No vaporware.</p>
-    </div>
-    <div class="projects-grid" id="projectsGrid"></div>
-  </section>
-
-  <!-- CONTACT / FOOTER -->
-  <section id="contact" class="contact-section">
-    <div class="contact-inner">
-      <h2 class="contact-title" data-reveal>
-        LET'S <span class="gold glitch-hover" data-text="CONNECT">CONNECT</span>
-      </h2>
-      <p class="contact-sub" data-reveal>Find the team. Find the code. Find the work.</p>
-
-      <div class="contact-links" data-reveal>
-        <a href="https://www.linkedin.com/company/128424030/" target="_blank" rel="noopener" class="contact-card">
-          <span class="contact-card-label">LinkedIn</span>
-          <span class="contact-card-value">Hash Browns Co.</span>
-          <span class="contact-card-arrow">&rarr;</span>
-        </a>
-        <a href="https://github.com/HashBrownsNj" target="_blank" rel="noopener" class="contact-card">
-          <span class="contact-card-label">GitHub</span>
-          <span class="contact-card-value">@HashBrownsNj</span>
-          <span class="contact-card-arrow">&rarr;</span>
-        </a>
+    <section id="about" class="section studio-section">
+      <div class="section-header centered" data-reveal>
+        <span class="section-kicker">Studio operating system</span>
+        <h2>Small team. Enterprise-grade taste.</h2>
+        <p>We combine offensive security thinking, systems architecture, and precise interface craft into one compact product studio.</p>
       </div>
-    </div>
+      <div class="feature-grid">
+        <article class="feature-card" data-reveal>
+          <div class="icon-shell"><svg viewBox="0 0 24 24"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10Z"/><path d="m9 12 2 2 4-5"/></svg></div>
+          <h3>Security-first builds</h3>
+          <p>Threat modeling, audit trails, and sane defaults baked into every product decision from day zero.</p>
+        </article>
+        <article class="feature-card" data-reveal>
+          <div class="icon-shell"><svg viewBox="0 0 24 24"><path d="M4 17 10 5l4 8 2-4 4 8"/><path d="M4 17h16"/></svg></div>
+          <h3>Performance discipline</h3>
+          <p>Fast-loading interfaces, GPU-friendly motion, and responsive layouts that stay calm under pressure.</p>
+        </article>
+        <article class="feature-card" data-reveal>
+          <div class="icon-shell"><svg viewBox="0 0 24 24"><path d="M12 3v18"/><path d="M3 12h18"/><path d="m5 5 14 14"/><path d="m19 5-14 14"/></svg></div>
+          <h3>Competition edge</h3>
+          <p>CyberPatriot intensity meets hackathon speed: sharp strategy, fast execution, no filler.</p>
+        </article>
+      </div>
+    </section>
 
-    <footer class="footer">
-      <span>&copy; 2026 HASH BROWNS — STUDENT CYBERSECURITY &amp; HACKATHON TEAM</span>
-      <span class="footer-gold">ALWAYS GOLD</span>
-    </footer>
-  </section>
+    <section id="team" class="section team-section">
+      <div class="section-header" data-reveal>
+        <span class="section-kicker">People behind the system</span>
+        <h2>Designed by operators.</h2>
+        <p>Four focused builders with complementary instincts across security, architecture, infrastructure, and growth.</p>
+      </div>
+      <div class="team-grid" id="teamGrid"></div>
+    </section>
 
+    <section id="projects" class="section projects-section">
+      <div class="section-header split" data-reveal>
+        <div><span class="section-kicker">Selected work</span><h2>Products with signal.</h2></div>
+        <p>Live builds and internal tools shaped by real operational needs—not portfolio theater.</p>
+      </div>
+      <div class="projects-grid" id="projectsGrid"></div>
+    </section>
+
+    <section id="systems" class="section system-section">
+      <div class="section-header centered" data-reveal>
+        <span class="section-kicker">Interface primitives</span>
+        <h2>One cohesive design language.</h2>
+        <p>Production UI details for forms, dialogs, tables, tooltips, empty states, pagination, tabs, accordions, and notifications.</p>
+      </div>
+      <div class="system-grid" data-reveal>
+        <form class="panel form-panel"><label>Project brief<input placeholder="Secure triage platform" /></label><label>Priority<select><option>Launch critical</option><option>Exploration</option></select></label><button class="btn btn-primary" type="button">Submit brief</button></form>
+        <div class="panel"><div class="tabs"><button class="active">Overview</button><button>Risks</button><button>Logs</button></div><div class="table-wrap"><table><thead><tr><th>Asset</th><th>Status</th><th>Owner</th></tr></thead><tbody><tr><td>API Gateway</td><td><span class="badge good">Healthy</span></td><td>AD</td></tr><tr><td>Auth Layer</td><td><span class="badge warn">Review</span></td><td>AH</td></tr></tbody></table></div></div>
+        <div class="panel stack"><div class="toast"><span class="pulse"></span>Deployment verified</div><details open><summary>How fast can you ship?</summary><p>We prioritize narrow, high-quality releases with clean instrumentation and accessible interfaces.</p></details><div class="empty-state"><strong>No incidents</strong><span>Your system is quiet.</span></div><div class="pagination"><button>←</button><button class="active">1</button><button>2</button><button>→</button></div></div>
+      </div>
+    </section>
+
+    <section id="contact" class="contact-section">
+      <div class="contact-panel" data-reveal>
+        <span class="section-kicker">Ready when you are</span>
+        <h2>Build something secure, fast, and beautiful.</h2>
+        <p>Find the team, explore the code, or start a conversation about what comes next.</p>
+        <div class="contact-actions">
+          <a class="btn btn-primary" href="https://github.com/HashBrownsNj" target="_blank" rel="noopener">GitHub</a>
+          <a class="btn btn-secondary" href="https://www.linkedin.com/company/128424030/" target="_blank" rel="noopener">LinkedIn</a>
+        </div>
+      </div>
+      <footer class="footer"><span>© 2026 Hash Browns</span><span>Secure systems · refined interfaces</span></footer>
+    </section>
+  </main>
   <script type="module" src="/src/main.js"></script>
 </body>
 </html>
