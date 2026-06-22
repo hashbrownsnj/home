@@ -1,5 +1,5 @@
 import { initHeroScene } from './three/heroScene.js';
-import { renderTeam } from './components/team.js';
+import { renderTeam }    from './components/team.js';
 import { renderProjects } from './components/projects.js';
 import { setupScrollReveal } from './scrollReveal.js';
 
@@ -13,7 +13,7 @@ renderProjects();
 
 // ---------- 3. Scroll-triggered reveals ----------
 const reobserve = setupScrollReveal();
-reobserve(); // catch the freshly-rendered team/project cards
+reobserve();
 
 // ---------- 4. Hero load-in sequence ----------
 requestAnimationFrame(() => {
@@ -31,14 +31,14 @@ window.addEventListener('scroll', onScrollNav, { passive: true });
 // ---------- 6. Scroll progress bar ----------
 const progressBar = document.getElementById('scrollProgress');
 function onScrollProgress() {
-  const doc = document.documentElement;
+  const doc     = document.documentElement;
   const scrolled = (doc.scrollTop / (doc.scrollHeight - doc.clientHeight)) * 100;
   progressBar.style.width = `${scrolled}%`;
 }
 window.addEventListener('scroll', onScrollProgress, { passive: true });
 
 // ---------- 7. Custom cursor ----------
-const cursorDot = document.getElementById('cursorDot');
+const cursorDot  = document.getElementById('cursorDot');
 const cursorRing = document.getElementById('cursorRing');
 let ringX = 0, ringY = 0, mouseX = 0, mouseY = 0;
 
@@ -46,14 +46,14 @@ window.addEventListener('mousemove', (e) => {
   mouseX = e.clientX;
   mouseY = e.clientY;
   cursorDot.style.left = `${mouseX}px`;
-  cursorDot.style.top = `${mouseY}px`;
+  cursorDot.style.top  = `${mouseY}px`;
 });
 
 function animateCursorRing() {
-  ringX += (mouseX - ringX) * 0.18;
-  ringY += (mouseY - ringY) * 0.18;
+  ringX += (mouseX - ringX) * 0.14;
+  ringY += (mouseY - ringY) * 0.14;
   cursorRing.style.left = `${ringX}px`;
-  cursorRing.style.top = `${ringY}px`;
+  cursorRing.style.top  = `${ringY}px`;
   requestAnimationFrame(animateCursorRing);
 }
 animateCursorRing();
@@ -78,4 +78,11 @@ document.querySelectorAll('a[href^="#"]').forEach((link) => {
       target.scrollIntoView({ behavior: 'smooth', block: 'start' });
     }
   });
+});
+
+// ---------- 9. Staggered reveal delays for child elements ----------
+document.querySelectorAll('[data-reveal]').forEach((el, i) => {
+  if (!el.style.animationDelay) {
+    el.style.animationDelay = `${i * 0.06}s`;
+  }
 });
