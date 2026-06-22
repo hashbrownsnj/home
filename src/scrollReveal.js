@@ -2,9 +2,7 @@
  * Sets up an IntersectionObserver that adds `.is-visible` to any
  * section/element containing [data-reveal] children once it enters
  * the viewport, triggering the CSS reveal animations defined in
- * style.css. Re-observes dynamically injected content (team/projects)
- * by being called again after render, or via the mutation-safe
- * `observeAll` helper below.
+ * style.css.
  */
 export function setupScrollReveal() {
   const observer = new IntersectionObserver(
@@ -16,15 +14,15 @@ export function setupScrollReveal() {
         }
       });
     },
-    { threshold: 0.15, rootMargin: '0px 0px -60px 0px' }
+    { threshold: 0.12, rootMargin: '0px 0px -50px 0px' }
   );
 
   function observeAll() {
     document
-      .querySelectorAll('section, .team-card, .project-card')
+      .querySelectorAll('section, .team-card, .project-card, .pillar')
       .forEach((el) => observer.observe(el));
   }
 
   observeAll();
-  return observeAll; // call again after injecting dynamic content
+  return observeAll;
 }
