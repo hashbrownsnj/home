@@ -3,86 +3,79 @@ import { renderTeam } from './components/team.js';
 import { renderProjects } from './components/projects.js';
 import { setupScrollReveal } from './scrollReveal.js';
 
-const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+// ---------- 1. Three.js hero background ----------
 const canvas = document.getElementById('heroCanvas');
-if (canvas && !prefersReducedMotion) initHeroScene(canvas);
+if (canvas) initHeroScene(canvas);
 
+// ---------- 2. Render dynamic content ----------
 renderTeam();
 renderProjects();
 
+// ---------- 3. Scroll-triggered reveals ----------
 const reobserve = setupScrollReveal();
-reobserve();
+reobserve(); // catch the freshly-rendered team/project cards
 
-requestAnimationFrame(() => document.querySelector('.hero')?.classList.add('is-loaded'));
+// ---------- 4. Hero load-in sequence ----------
+requestAnimationFrame(() => {
+  document.querySelector('.hero').classList.add('is-loaded');
+});
 
+// ---------- 5. Nav background on scroll ----------
 const nav = document.getElementById('nav');
+function onScrollNav() {
+  if (window.scrollY > 40) nav.classList.add('scrolled');
+  else nav.classList.remove('scrolled');
+}
+window.addEventListener('scroll', onScrollNav, { passive: true });
+
+// ---------- 6. Scroll progress bar ----------
 const progressBar = document.getElementById('scrollProgress');
-let scrollY = window.scrollY;
-let smoothScroll = scrollY;
-let ticking = false;
-
-function updateScrollEffects() {
-  smoothScroll += (scrollY - smoothScroll) * 0.12;
-  nav?.classList.toggle('scrolled', scrollY > 24);
-
-  if (progressBar) {
-    const doc = document.documentElement;
-    const max = Math.max(1, doc.scrollHeight - doc.clientHeight);
-    progressBar.style.width = `${(scrollY / max) * 100}%`;
-  }
-
-  document.querySelectorAll('[data-parallax]').forEach((el) => {
-    const depth = Number(el.dataset.parallax || 0);
-    el.style.transform = `translate3d(0, ${smoothScroll * depth * 0.004}px, 0)`;
-  });
-
-  ticking = false;
+function onScrollProgress() {
+  const doc = document.documentElement;
+  const scrolled = (doc.scrollTop / (doc.scrollHeight - doc.clientHeight)) * 100;
+  progressBar.style.width = `${scrolled}%`;
 }
+window.addEventListener('scroll', onScrollProgress, { passive: true });
 
-window.addEventListener('scroll', () => {
-  scrollY = window.scrollY;
-  if (!ticking) {
-    requestAnimationFrame(updateScrollEffects);
-    ticking = true;
-  }
-}, { passive: true });
-updateScrollEffects();
+// ---------- 7. Custom cursor ----------
+const cursorDot = document.getElementById('cursorDot');
+const cursorRing = document.getElementById('cursorRing');
+let ringX = 0, ringY = 0, mouseX = 0, mouseY = 0;
 
-const cursorOrb = document.getElementById('cursorOrb');
-let pointerX = window.innerWidth / 2;
-let pointerY = window.innerHeight / 2;
-let orbX = pointerX;
-let orbY = pointerY;
+window.addEventListener('mousemove', (e) => {
+  mouseX = e.clientX;
+  mouseY = e.clientY;
+  cursorDot.style.left = `${mouseX}px`;
+  cursorDot.style.top = `${mouseY}px`;
+});
 
-window.addEventListener('pointermove', (event) => {
-  pointerX = event.clientX;
-  pointerY = event.clientY;
-
-  document.querySelectorAll('.feature-card, .team-card, .project-card, .panel').forEach((card) => {
-    const rect = card.getBoundingClientRect();
-    if (event.clientX >= rect.left && event.clientX <= rect.right && event.clientY >= rect.top && event.clientY <= rect.bottom) {
-      card.style.setProperty('--mx', `${event.clientX - rect.left}px`);
-      card.style.setProperty('--my', `${event.clientY - rect.top}px`);
-    }
-  });
-}, { passive: true });
-
-function animateOrb() {
-  if (cursorOrb && !prefersReducedMotion) {
-    orbX += (pointerX - orbX) * 0.09;
-    orbY += (pointerY - orbY) * 0.09;
-    cursorOrb.style.transform = `translate3d(${orbX - 180}px, ${orbY - 180}px, 0)`;
-    requestAnimationFrame(animateOrb);
-  }
+function animateCursorRing() {
+  ringX += (mouseX - ringX) * 0.18;
+  ringY += (mouseY - ringY) * 0.18;
+  cursorRing.style.left = `${ringX}px`;
+  cursorRing.style.top = `${ringY}px`;
+  requestAnimationFrame(animateCursorRing);
 }
-animateOrb();
+animateCursorRing();
 
+document.addEventListener('mouseover', (e) => {
+  if (e.target.closest('a, button, .pillar, .project-card, .team-card')) {
+    cursorRing.classList.add('hover');
+  }
+});
+document.addEventListener('mouseout', (e) => {
+  if (e.target.closest('a, button, .pillar, .project-card, .team-card')) {
+    cursorRing.classList.remove('hover');
+  }
+});
+
+// ---------- 8. Smooth-scroll for nav anchors ----------
 document.querySelectorAll('a[href^="#"]').forEach((link) => {
-  link.addEventListener('click', (event) => {
+  link.addEventListener('click', (e) => {
     const target = document.querySelector(link.getAttribute('href'));
     if (target) {
-      event.preventDefault();
-      target.scrollIntoView({ behavior: prefersReducedMotion ? 'auto' : 'smooth', block: 'start' });
+      e.preventDefault();
+      target.scrollIntoView({ behavior: 'smooth', block: 'start' });
     }
   });
 });
