@@ -1,0 +1,171 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Hash Browns — Cybersecurity · CyberPatriot · Hackathon</title>
+  <meta name="description" content="Hash Browns — student cybersecurity, CyberPatriot, and hackathon team. Always gold. Crispy and hot as hell." />
+  <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Space+Mono:ital,wght@0,400;0,700;1,400&family=Bebas+Neue&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/src/style.css" />
+</head>
+<body>
+
+  <!-- grain / noise overlay -->
+  <div class="grain"></div>
+
+  <!-- custom cursor -->
+  <div class="cursor-dot" id="cursorDot"></div>
+  <div class="cursor-ring" id="cursorRing"></div>
+
+  <!-- progress bar -->
+  <div class="scroll-progress" id="scrollProgress"></div>
+
+  <!-- nav -->
+  <nav class="nav" id="nav">
+    <div class="nav-inner">
+      <a href="#top" class="nav-logo">HASH<span>BROWNS</span></a>
+      <div class="nav-links">
+        <a href="#about" data-nav>About</a>
+        <a href="#team" data-nav>Team</a>
+        <a href="#projects" data-nav>Projects</a>
+        <a href="#contact" data-nav>Connect</a>
+      </div>
+      <div class="nav-status">
+        <span class="status-dot"></span> SYSTEM ONLINE
+      </div>
+    </div>
+  </nav>
+
+  <!-- HERO -->
+  <section id="top" class="hero">
+    <canvas id="heroCanvas"></canvas>
+    <div class="hero-vignette"></div>
+    <div class="hero-scanline"></div>
+
+    <div class="hero-content">
+      <div class="hero-tag" data-reveal>
+        <span class="bracket">[</span> CYBERSECURITY &middot; CYBERPATRIOT &middot; HACKATHON <span class="bracket">]</span>
+      </div>
+      <h1 class="hero-title">
+        <span class="line" data-reveal-title>HASH</span>
+        <span class="line gold" data-reveal-title>BROWNS</span>
+      </h1>
+      <p class="hero-sub" data-reveal>Always gold. Crispy and hot as hell.</p>
+      <p class="hero-desc" data-reveal>
+        We're a small team of student developers building things that matter to us —
+        fast, sharp, and without cutting corners. Cybersecurity runs through everything
+        we do. So does a stubborn refusal to ship anything ugly.
+      </p>
+      <div class="hero-cta" data-reveal>
+        <a href="#projects" class="btn btn-primary">View Our Work <span class="btn-arrow">&rarr;</span></a>
+        <a href="#team" class="btn btn-ghost">Meet The Team</a>
+      </div>
+    </div>
+
+    <div class="scroll-cue" data-reveal>
+      <span>SCROLL</span>
+      <div class="scroll-cue-line"></div>
+    </div>
+  </section>
+
+  <!-- TICKER -->
+  <div class="ticker">
+    <div class="ticker-track">
+      <span>THREAT INTELLIGENCE</span><span>&middot;</span>
+      <span>SYSTEMS ARCHITECTURE</span><span>&middot;</span>
+      <span>CYBERPATRIOT</span><span>&middot;</span>
+      <span>HACKATHONS</span><span>&middot;</span>
+      <span>PENETRATION TESTING</span><span>&middot;</span>
+      <span>ALWAYS GOLD</span><span>&middot;</span>
+      <span>THREAT INTELLIGENCE</span><span>&middot;</span>
+      <span>SYSTEMS ARCHITECTURE</span><span>&middot;</span>
+      <span>CYBERPATRIOT</span><span>&middot;</span>
+      <span>HACKATHONS</span><span>&middot;</span>
+      <span>PENETRATION TESTING</span><span>&middot;</span>
+      <span>ALWAYS GOLD</span><span>&middot;</span>
+    </div>
+  </div>
+
+  <!-- ABOUT / MANIFESTO -->
+  <section id="about" class="manifesto">
+    <div class="manifesto-grid">
+      <div class="manifesto-num" data-reveal>01</div>
+      <div class="manifesto-body">
+        <h2 class="section-title" data-reveal>WHO WE <span class="gold">ARE</span></h2>
+        <p class="manifesto-text" data-reveal>
+          Hash Browns started as a CyberPatriot team and grew into something bigger —
+          a crew that ships real software, breaks real systems (legally), and competes
+          like it actually matters. We don't do filler projects. Everything we build
+          has teeth.
+        </p>
+        <div class="manifesto-pillars">
+          <div class="pillar" data-reveal>
+            <div class="pillar-icon">⌁</div>
+            <h3>Security First</h3>
+            <p>Every line of code gets the attacker's read before it ships.</p>
+          </div>
+          <div class="pillar" data-reveal>
+            <div class="pillar-icon">▣</div>
+            <h3>Built to Scale</h3>
+            <p>Infrastructure that doesn't fall over when it matters most.</p>
+          </div>
+          <div class="pillar" data-reveal>
+            <div class="pillar-icon">◭</div>
+            <h3>No Ugly Ships</h3>
+            <p>If it isn't sharp, it doesn't go out the door.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- TEAM -->
+  <section id="team" class="team-section">
+    <h2 class="section-title center" data-reveal>THE <span class="gold">TEAM</span></h2>
+    <p class="section-sub center" data-reveal>Four people. One standard.</p>
+    <div class="team-grid" id="teamGrid"></div>
+  </section>
+
+  <!-- PROJECTS -->
+  <section id="projects" class="projects-section">
+    <div class="projects-header">
+      <h2 class="section-title" data-reveal>OUR <span class="gold">WORK</span></h2>
+      <p class="section-sub" data-reveal>Live builds. Real repos. No vaporware.</p>
+    </div>
+    <div class="projects-grid" id="projectsGrid"></div>
+  </section>
+
+  <!-- CONTACT / FOOTER -->
+  <section id="contact" class="contact-section">
+    <div class="contact-inner">
+      <h2 class="contact-title" data-reveal>
+        LET'S <span class="gold glitch-hover" data-text="CONNECT">CONNECT</span>
+      </h2>
+      <p class="contact-sub" data-reveal>Find the team. Find the code. Find the work.</p>
+
+      <div class="contact-links" data-reveal>
+        <a href="https://www.linkedin.com/company/128424030/" target="_blank" rel="noopener" class="contact-card">
+          <span class="contact-card-label">LinkedIn</span>
+          <span class="contact-card-value">Hash Browns Co.</span>
+          <span class="contact-card-arrow">&rarr;</span>
+        </a>
+        <a href="https://github.com/HashBrownsNj" target="_blank" rel="noopener" class="contact-card">
+          <span class="contact-card-label">GitHub</span>
+          <span class="contact-card-value">@HashBrownsNj</span>
+          <span class="contact-card-arrow">&rarr;</span>
+        </a>
+      </div>
+    </div>
+
+    <footer class="footer">
+      <span>&copy; 2026 HASH BROWNS — STUDENT CYBERSECURITY &amp; HACKATHON TEAM</span>
+      <span class="footer-gold">ALWAYS GOLD</span>
+    </footer>
+  </section>
+
+  <script type="module" src="/src/main.js"></script>
+</body>
+</html>
