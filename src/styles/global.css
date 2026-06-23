@@ -1693,6 +1693,9 @@ button { cursor: pointer; border: none; background: none; font: inherit; color: 
 .scroll-zoom-image-container {
   z-index: -2;
   perspective: 500px;
+  /* preserve-3d so the child img's z transform is evaluated inside this
+     perspective context — without it the z axis collapses to 2D */
+  transform-style: preserve-3d;
   overflow: hidden;
 }
 .scroll-zoom-image {
@@ -1703,6 +1706,8 @@ button { cursor: pointer; border: none; background: none; font: inherit; color: 
   transform-origin: center center;
   will-change: transform;
   opacity: 0.92;
+  /* preserve-3d ensures Framer's composed matrix (scale + z) is rendered in 3D */
+  transform-style: preserve-3d;
 }
 .scroll-zoom-intro {
   width: min(760px, calc(100vw - (2 * var(--pad-x))));
