@@ -26,26 +26,47 @@ function LoaderOverlay() {
       exit={{ opacity: 0, y: '-100%' }}
       transition={{ duration: 0.9, ease: [0.76, 0, 0.24, 1] }}
     >
-      <div className="loader-panel">
-        <motion.div
-          className="loader-mark"
-          initial={{ opacity: 0, y: 10 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.5, ease: [0.16, 1, 0.3, 1] }}
-          aria-hidden="true"
-        >
-          HB
-        </motion.div>
-        <div className="loader-brand">HASH<span>BROWNS</span></div>
-        <p className="loader-caption">initializing secure workspace</p>
-        <div className="loader-track" aria-hidden="true">
-          <motion.div
-            className="loader-bar"
-            initial={{ scaleX: 0 }}
-            animate={{ scaleX: 1 }}
-            transition={{ duration: 1.45, ease: [0.65, 0, 0.35, 1] }}
-          />
+      <div className="loader-orbit" aria-hidden="true" />
+      <div className="loader-shell">
+        <div className="loader-side loader-side--left" aria-hidden="true">
+          <span>SECURE</span>
+          <span>BUILD</span>
+          <span>READY</span>
         </div>
+
+        <div className="loader-panel">
+          <motion.div
+            className="loader-mark"
+            initial={{ opacity: 0, y: 10 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.5, ease: [0.16, 1, 0.3, 1] }}
+            aria-hidden="true"
+          >
+            HB
+          </motion.div>
+          <div className="loader-brand">HASH<span>BROWNS</span></div>
+          <p className="loader-caption">initializing secure workspace</p>
+          <div className="loader-track" aria-hidden="true">
+            <motion.div
+              className="loader-bar"
+              initial={{ scaleX: 0 }}
+              animate={{ scaleX: 1 }}
+              transition={{ duration: 1.45, ease: [0.65, 0, 0.35, 1] }}
+            />
+          </div>
+        </div>
+
+        <div className="loader-side loader-side--right" aria-hidden="true">
+          <span>01</span>
+          <span>HB/NJ</span>
+          <span>ONLINE</span>
+        </div>
+      </div>
+      <div className="loader-corners" aria-hidden="true">
+        <span />
+        <span />
+        <span />
+        <span />
       </div>
     </motion.div>
   )
