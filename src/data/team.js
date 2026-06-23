@@ -12,6 +12,7 @@ export const team = [
       role: 'Founder & CEO',
       url: 'https://planitapp.onrender.com',
     },
+    skills: ['Threat Intel', 'Linux', 'Hardening', 'OSINT', 'Python', 'Incident Response'],
   },
   {
     name: 'Advaith Banigandlapati',
@@ -21,6 +22,7 @@ export const team = [
     github: 'https://github.com/advaithbanigandlapati-coder',
     linkedin: 'https://www.linkedin.com/in/advaith-banigandlapati-6537753b6/',
     initials: 'AB',
+    skills: ['React', 'Architecture', 'Node', 'UX Systems', 'APIs', 'Product'],
   },
   {
     name: 'Abhimanyu Daripally',
@@ -30,6 +32,7 @@ export const team = [
     github: 'https://github.com/d2crashout',
     linkedin: null,
     initials: 'AD',
+    skills: ['Backend', 'Databases', 'Infrastructure', 'Scaling', 'DevOps', 'Systems'],
   },
   {
     name: 'Nivas Palaniappan',
@@ -39,6 +42,7 @@ export const team = [
     github: null,
     linkedin: 'https://www.linkedin.com/in/nivas-palani',
     initials: 'NP',
+    skills: ['Growth', 'Brand', 'SEO', 'Analytics', 'Strategy', 'Content'],
   },
 ]
 
