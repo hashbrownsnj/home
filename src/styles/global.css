@@ -1667,8 +1667,11 @@ button { cursor: pointer; border: none; background: none; font: inherit; color: 
   overflow: hidden;
   display: grid;
   place-items: center;
-  isolation: isolate;
+  /* isolation: isolate REMOVED — it creates a stacking context that traps
+     z-index values, causing the -z image layers to paint over the text.
+     perspective alone is enough to scope the 3D context. */
   perspective: 500px;
+  transform-style: preserve-3d;
 }
 .scroll-zoom-hero,
 .scroll-zoom-darken,
