@@ -138,7 +138,6 @@ export default function Team() {
           </div>
         </div>
       </motion.div>
-      <MemberShowcase prefersReducedMotion={prefersReducedMotion} />
     </section>
   )
 }
