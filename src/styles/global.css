@@ -176,7 +176,7 @@ button { cursor: pointer; border: none; background: none; font: inherit; color: 
   display: flex;
   align-items: center;
   justify-content: space-between;
-  gap: 24px;
+  gap: clamp(16px, 3vw, 24px);
 }
 .nav-logo {
   font-family: var(--font-display);
@@ -190,7 +190,7 @@ button { cursor: pointer; border: none; background: none; font: inherit; color: 
 .nav-links {
   display: flex;
   align-items: center;
-  gap: 36px;
+  gap: clamp(20px, 3vw, 36px);
 }
 .nav-link {
   font-family: var(--font-mono);
@@ -1234,7 +1234,9 @@ button { cursor: pointer; border: none; background: none; font: inherit; color: 
   /* Pinned duration: long enough to read the 3D pass, short enough to avoid
      the "blank hallway" feeling between scroll-driven showcases. */
   height: 270svh;
-  overflow: visible;
+  overflow: clip;
+  /* clip instead of visible — prevents horizontal bleed from 3D children
+     while still allowing the sticky child to work (clip ≠ hidden for sticky) */
   margin-block: 0 -1px;
   background:
     linear-gradient(180deg, #02050a 0%, rgba(3, 5, 10, 0.96) 12%, rgba(3, 5, 10, 0.98) 88%, var(--bg) 100%),
@@ -1247,12 +1249,14 @@ button { cursor: pointer; border: none; background: none; font: inherit; color: 
   /* exact viewport height — sticky requires this */
   height: 100svh;
   width: 100%;
-  overflow: clip;
+  /* NO overflow here: any value other than visible flattens preserve-3d
+     in most browsers. The outer section's overflow:clip handles bleed. */
+  overflow: visible;
   display: grid;
   place-items: center;
   perspective: 1150px;
   transform-style: preserve-3d;
-  isolation: isolate;
+  /* NO isolation:isolate — it creates a stacking context that flattens 3D */
 }
 .spatial-zoom-sticky::before,
 .spatial-zoom-sticky::after,
@@ -1436,13 +1440,15 @@ button { cursor: pointer; border: none; background: none; font: inherit; color: 
   margin-inline: auto;
   padding-inline: var(--pad-x);
   margin-top: clamp(40px, 6vw, 64px);
+  align-items: stretch;
 }
 
 /* Card */
 .tcard {
   position: relative;
   display: grid;
-  grid-template-rows: auto 1fr auto;
+  /* 4 rows: avatar | body (flex-grows) | skills | cta */
+  grid-template-rows: auto 1fr auto auto;
   gap: 20px;
   padding: clamp(24px, 3vw, 36px);
   border: 1px solid var(--border);
@@ -1657,13 +1663,14 @@ button { cursor: pointer; border: none; background: none; font: inherit; color: 
   /* Match Framer's progress window to the pinned interval. The animation now
      begins when the section sticks, not while it is still below the fold. */
   height: 240svh;
-  /* Do not clip this wrapper: overflow on a sticky ancestor makes browser
-     sticky positioning resolve against the wrapper instead of the viewport,
-     which caused the animation to run after the scene had already passed. */
-  overflow: visible;
+  /* overflow:clip allows sticky children to work (unlike overflow:hidden/auto)
+     while preventing 3D-transformed children from causing horizontal scrollbar. */
+  overflow: clip;
   background: #02050a;
   border-top: 1px solid var(--border);
   border-bottom: 0;
+  /* overlap 1px with the previous section to kill the seam/flash */
+  margin-block: -1px 0;
 }
 .scroll-zoom-sticky {
   position: sticky;
@@ -1671,12 +1678,11 @@ button { cursor: pointer; border: none; background: none; font: inherit; color: 
   /* must be exact viewport height — not min-height — so sticky works */
   height: 100svh;
   width: 100%;
-  overflow: hidden;
+  /* NO overflow:hidden — it flattens preserve-3d, killing the z/scale animation.
+     The .scroll-zoom-image-container has its own overflow:hidden for content clipping. */
+  overflow: visible;
   display: grid;
   place-items: center;
-  /* isolation: isolate REMOVED — it creates a stacking context that traps
-     z-index values, causing the -z image layers to paint over the text.
-     perspective alone is enough to scope the 3D context. */
   perspective: 500px;
   transform-style: preserve-3d;
 }
@@ -1702,9 +1708,8 @@ button { cursor: pointer; border: none; background: none; font: inherit; color: 
 }
 .scroll-zoom-image-container {
   z-index: -2;
-  perspective: 500px;
-  /* preserve-3d so the child img's z transform is evaluated inside this
-     perspective context — without it the z axis collapses to 2D */
+  /* No perspective here — parent .scroll-zoom-sticky already sets it.
+     Two nested perspectives compound incorrectly and distort the zoom. */
   transform-style: preserve-3d;
   overflow: hidden;
 }
