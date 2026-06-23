@@ -1231,14 +1231,15 @@ button { cursor: pointer; border: none; background: none; font: inherit; color: 
 /* ── 3D SPATIAL SCROLL ZOOM ─────────────────────────────────── */
 .spatial-zoom-section {
   position: relative;
-  /* tall enough for all items to fly through — sticky fires the whole time */
-  height: 500svh;
+  /* Pinned duration: long enough to read the 3D pass, short enough to avoid
+     the "blank hallway" feeling between scroll-driven showcases. */
+  height: 270svh;
   overflow: visible;
-  margin-block: -1px;
+  margin-block: 0 -1px;
   background:
-    radial-gradient(circle at 50% 44%, rgba(37, 99, 235, 0.16), transparent 34%),
-    linear-gradient(180deg, var(--bg), #03050a 48%, var(--bg));
-  border-block: 1px solid var(--border);
+    linear-gradient(180deg, #02050a 0%, rgba(3, 5, 10, 0.96) 12%, rgba(3, 5, 10, 0.98) 88%, var(--bg) 100%),
+    radial-gradient(circle at 50% 44%, rgba(37, 99, 235, 0.16), transparent 34%);
+  border-bottom: 1px solid var(--border);
 }
 .spatial-zoom-sticky {
   position: sticky;
@@ -1323,7 +1324,7 @@ button { cursor: pointer; border: none; background: none; font: inherit; color: 
 }
 
 @media (max-width: 760px) {
-  .spatial-zoom-section { height: 380svh; }
+  .spatial-zoom-section { height: 230svh; }
   .spatial-zoom-grid { grid-template: repeat(4, 25svh) / repeat(4, 25vw); }
   .spatial-zoom-item { font-size: clamp(12px, 3.8vmin, 26px); }
   .spatial-zoom-item--special b { font-size: clamp(54px, 17vmin, 104px); }
@@ -1653,14 +1654,16 @@ button { cursor: pointer; border: none; background: none; font: inherit; color: 
 /* ── FRAMER SCROLLTRIGGER-STYLE IMAGE ZOOM ─────────────────── */
 .scroll-zoom-scene {
   position: relative;
-  /* tall enough that you spend real time scrolling through — sticky fires the whole time */
-  height: 350svh;
+  /* Match Framer's progress window to the pinned interval. The animation now
+     begins when the section sticks, not while it is still below the fold. */
+  height: 240svh;
   /* Do not clip this wrapper: overflow on a sticky ancestor makes browser
      sticky positioning resolve against the wrapper instead of the viewport,
      which caused the animation to run after the scene had already passed. */
   overflow: visible;
   background: #02050a;
-  border-block: 1px solid var(--border);
+  border-top: 1px solid var(--border);
+  border-bottom: 0;
 }
 .scroll-zoom-sticky {
   position: sticky;
@@ -1740,7 +1743,7 @@ button { cursor: pointer; border: none; background: none; font: inherit; color: 
 }
 
 @media (max-width: 760px) {
-  .scroll-zoom-scene { height: 280svh; }
+  .scroll-zoom-scene { height: 215svh; }
   .scroll-zoom-intro h2 { font-size: clamp(44px, 17vw, 76px); }
 }
 
