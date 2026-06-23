@@ -70,7 +70,7 @@ export default function ScrollZoomScene() {
 
   const { scrollYProgress } = useScroll({
     target: ref,
-    offset: ['start end', 'end start'],
+    offset: ['start start', 'end end'],
   })
 
   const smoothProgress = useSpring(scrollYProgress, {
@@ -80,11 +80,11 @@ export default function ScrollZoomScene() {
     restDelta: 0.0005,
   })
 
-  // Keep the zoom pinned to the viewport centre, like a ScrollTrigger scene.
-  // Scaling the covered image avoids translateZ perspective drift that can pull
-  // the focal point out of frame on narrow or tall viewports.
-  const imageScale = useTransform(smoothProgress, [0, 1], [1, 2.05])
-  const heroScale  = useTransform(smoothProgress, [0, 1], [1, 1.35])
+  // Use Framer's individual transform props so perspective is respected.
+  // scale + z as separate props compose correctly with the parent perspective.
+  const imageScale = useTransform(smoothProgress, [0, 1], [1, 2.2])
+  const imageZ     = useTransform(smoothProgress, [0, 1], [0, 280])
+  const heroScale  = useTransform(smoothProgress, [0, 1], [1, 1.5])
   const darkness   = useTransform(smoothProgress, [0, 0.7, 1], [0, 0.5, 0.82])
 
   // Text fades in mid-scroll, out near end
@@ -116,7 +116,12 @@ export default function ScrollZoomScene() {
           aria-hidden="true"
         />
 
-        {/* The container clips the center-origin scale so the scene remains pinned in frame. */}
+        {/*
+          KEY FIX: The image container sets perspective. The img itself uses
+          Framer's z + scale props (not a template string) so the browser can
+          apply the perspective transform correctly without the two transforms
+          fighting each other.
+        */}
         <div className="scroll-zoom-image-container" aria-hidden="true">
           <motion.img
             src={SCENE_IMAGE}
@@ -127,6 +132,7 @@ export default function ScrollZoomScene() {
                 ? undefined
                 : {
                     scale: imageScale,
+                    z: imageZ,
                     transformOrigin: 'center center',
                   }
             }
