@@ -1,7 +1,7 @@
 {
   "name": "hashbrowns-showcase",
   "private": true,
-  "version": "1.0.0",
+  "version": "2.0.0",
   "type": "module",
   "scripts": {
     "dev": "vite",
@@ -9,10 +9,12 @@
     "preview": "vite preview"
   },
   "dependencies": {
-    "three": "^0.165.0",
-    "gsap": "^3.12.5"
+    "framer-motion": "^11.3.24",
+    "react": "^18.3.1",
+    "react-dom": "^18.3.1"
   },
   "devDependencies": {
+    "@vitejs/plugin-react": "^4.3.1",
     "vite": "^5.4.0"
   }
 }
