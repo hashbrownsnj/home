@@ -11,6 +11,7 @@ import Nav from './components/Nav.jsx'
 import Hero from './components/Hero.jsx'
 import Ticker from './components/Ticker.jsx'
 import SpatialZoom from './components/SpatialZoom.jsx'
+import ScrollZoomScene from './components/ScrollZoomScene.jsx'
 import About from './components/About.jsx'
 import Team from './components/Team.jsx'
 import Projects from './components/Projects.jsx'
@@ -25,14 +26,18 @@ function LoaderOverlay() {
       exit={{ opacity: 0, y: '-100%' }}
       transition={{ duration: 0.9, ease: [0.76, 0, 0.24, 1] }}
     >
-      <motion.div
-        className="loader-leak"
-        initial={{ opacity: 0, scale: 0.92 }}
-        animate={{ opacity: 1, scale: 1 }}
-        transition={{ duration: 0.7, ease: [0.16, 1, 0.3, 1] }}
-      />
       <div className="loader-panel">
+        <motion.div
+          className="loader-mark"
+          initial={{ opacity: 0, y: 10 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.5, ease: [0.16, 1, 0.3, 1] }}
+          aria-hidden="true"
+        >
+          HB
+        </motion.div>
         <div className="loader-brand">HASH<span>BROWNS</span></div>
+        <p className="loader-caption">initializing secure workspace</p>
         <div className="loader-track" aria-hidden="true">
           <motion.div
             className="loader-bar"
@@ -41,9 +46,24 @@ function LoaderOverlay() {
             transition={{ duration: 1.45, ease: [0.65, 0, 0.35, 1] }}
           />
         </div>
-        <p className="loader-caption">warming the stack</p>
       </div>
     </motion.div>
+  )
+}
+
+function AmbientScrollBackdrop() {
+  const prefersReducedMotion = useReducedMotion()
+  const { scrollYProgress } = useScroll()
+  const scaleRaw = useTransform(scrollYProgress, [0, 0.45, 1], [1, 1.16, 1.06])
+  const blurRaw = useTransform(scrollYProgress, [0, 0.5, 1], ['0px', '14px', '5px'])
+  const scale = useSpring(scaleRaw, { stiffness: 70, damping: 28 })
+
+  return (
+    <motion.div
+      className="ambient-scroll-backdrop"
+      style={prefersReducedMotion ? undefined : { scale, filter: blurRaw }}
+      aria-hidden="true"
+    />
   )
 }
 
@@ -86,6 +106,8 @@ export default function App() {
 
   return (
     <>
+      <AmbientScrollBackdrop />
+
       {/* Film-grain texture overlay */}
       <div className="grain" aria-hidden="true" />
 
@@ -96,6 +118,7 @@ export default function App() {
       <main>
         <Hero />
         <Ticker />
+        <ScrollZoomScene />
         <SpatialZoom />
         <ParallaxSection intensity={34}><About /></ParallaxSection>
         <ParallaxSection intensity={44}><Team /></ParallaxSection>
