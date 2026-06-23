@@ -1231,17 +1231,11 @@ button { cursor: pointer; border: none; background: none; font: inherit; color: 
 /* ── 3D SPATIAL SCROLL ZOOM ─────────────────────────────────── */
 .spatial-zoom-section {
   position: relative;
-<<<<<<< codex/fix-scroll-animation-and-sticky-feature
   /* Pinned duration: long enough to read the 3D pass, short enough to avoid
      the "blank hallway" feeling between scroll-driven showcases. */
   height: 270svh;
   overflow: visible;
   margin-block: 0 -1px;
-=======
-  /* tall enough for all items to fly through — sticky fires the whole time */
-  height: 500svh;
-  margin-block: -1px;
->>>>>>> main
   background:
     linear-gradient(180deg, #02050a 0%, rgba(3, 5, 10, 0.96) 12%, rgba(3, 5, 10, 0.98) 88%, var(--bg) 100%),
     radial-gradient(circle at 50% 44%, rgba(37, 99, 235, 0.16), transparent 34%);
@@ -1660,7 +1654,6 @@ button { cursor: pointer; border: none; background: none; font: inherit; color: 
 /* ── FRAMER SCROLLTRIGGER-STYLE IMAGE ZOOM ─────────────────── */
 .scroll-zoom-scene {
   position: relative;
-<<<<<<< codex/fix-scroll-animation-and-sticky-feature
   /* Match Framer's progress window to the pinned interval. The animation now
      begins when the section sticks, not while it is still below the fold. */
   height: 240svh;
@@ -1668,11 +1661,6 @@ button { cursor: pointer; border: none; background: none; font: inherit; color: 
      sticky positioning resolve against the wrapper instead of the viewport,
      which caused the animation to run after the scene had already passed. */
   overflow: visible;
-=======
-  /* tall enough that you spend real time scrolling through — sticky fires the whole time */
-  height: 350svh;
-  overflow: clip;
->>>>>>> main
   background: #02050a;
   border-top: 1px solid var(--border);
   border-bottom: 0;
