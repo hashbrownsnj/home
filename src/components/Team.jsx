@@ -1,4 +1,11 @@
-import { motion, useReducedMotion } from 'framer-motion'
+import { useRef } from 'react'
+import {
+  motion,
+  useReducedMotion,
+  useScroll,
+  useSpring,
+  useTransform,
+} from 'framer-motion'
 import { team } from '../data/team.js'
 
 const VIEWPORT = { once: true, amount: 0.1 }
@@ -131,6 +138,7 @@ export default function Team() {
           </div>
         </div>
       </motion.div>
+      <MemberShowcase prefersReducedMotion={prefersReducedMotion} />
     </section>
   )
 }
