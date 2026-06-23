@@ -83,7 +83,7 @@ export default function SpatialZoom() {
 
   const { scrollYProgress } = useScroll({
     target: sectionRef,
-    offset: ['start start', 'end end'],
+    offset: ['start start', 'end start'],
   })
 
   const smoothProgress = useSpring(scrollYProgress, {
