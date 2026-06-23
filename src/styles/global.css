@@ -229,9 +229,81 @@ button { cursor: pointer; border: none; background: none; font: inherit; color: 
   box-shadow: 0 0 8px var(--green);
   flex-shrink: 0;
 }
+/* ── NAV BURGER / MOBILE MENU ────────────────────────────────── */
+.nav-burger {
+  display: none;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  gap: 5px;
+  width: 40px;
+  height: 40px;
+  background: none;
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  cursor: pointer;
+  padding: 0;
+  flex-shrink: 0;
+  transition: border-color 0.2s;
+}
+.nav-burger:hover { border-color: var(--border-accent); }
+.nav-burger-bar {
+  display: block;
+  width: 18px;
+  height: 1px;
+  background: var(--text);
+  border-radius: 1px;
+  transition: transform 0.3s var(--ease), opacity 0.2s;
+  transform-origin: center;
+}
+.nav-burger.open .nav-burger-bar:nth-child(1) { transform: translateY(6px) rotate(45deg); }
+.nav-burger.open .nav-burger-bar:nth-child(2) { opacity: 0; transform: scaleX(0); }
+.nav-burger.open .nav-burger-bar:nth-child(3) { transform: translateY(-6px) rotate(-45deg); }
+
+.nav-mobile-menu {
+  display: none;
+  position: fixed;
+  inset: 0;
+  z-index: 499;
+  background: rgba(5, 7, 10, 0.97);
+  backdrop-filter: blur(24px) saturate(1.4);
+  -webkit-backdrop-filter: blur(24px) saturate(1.4);
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 0;
+  padding: 80px var(--pad-x) 40px;
+}
+.nav-mobile-menu.open { display: flex; }
+.nav-mobile-link {
+  font-family: var(--font-display);
+  font-size: clamp(36px, 10vw, 56px);
+  font-weight: 800;
+  letter-spacing: -0.03em;
+  color: var(--muted);
+  text-align: center;
+  padding: 14px 0;
+  width: 100%;
+  transition: color 0.2s;
+  border-bottom: 1px solid var(--border);
+}
+.nav-mobile-link:last-of-type { border-bottom: none; }
+.nav-mobile-link:hover { color: var(--accent-light); }
+.nav-mobile-status {
+  margin-top: 40px;
+  font-family: var(--font-mono);
+  font-size: 10px;
+  letter-spacing: 0.14em;
+  color: var(--muted);
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
 @media (max-width: 800px) {
   .nav-links { display: none; }
   .nav-status { display: none; }
+  .nav-burger { display: flex; }
 }
 
 /* ═══════════════════════════════════════════════════════════════
@@ -254,13 +326,17 @@ button { cursor: pointer; border: none; background: none; font: inherit; color: 
   justify-content: center;
   font-family: var(--font-display);
   font-weight: 800;
-  font-size: clamp(280px, 42vw, 640px);
+  /* Clamp upper bound to 92vw so it can never cause horizontal overflow on phones */
+  font-size: clamp(200px, 42vw, 640px);
   line-height: 1;
   letter-spacing: -0.06em;
   color: var(--text);
   pointer-events: none;
   user-select: none;
   will-change: transform;
+  /* Prevent the ghost from pushing layout width on narrow viewports */
+  max-width: 100%;
+  overflow: hidden;
 }
 .hero-grid-overlay {
   position: absolute;
@@ -305,7 +381,9 @@ button { cursor: pointer; border: none; background: none; font: inherit; color: 
   letter-spacing: -0.04em;
   color: var(--text);
   margin-bottom: 32px;
-  overflow: hidden;
+  /* Removed overflow:hidden — it was clipping descenders and the -webkit-text-stroke
+     glow on the accent line. The y + opacity animation still gives the reveal. */
+  padding-bottom: 0.12em; /* compensate for line-height < 1 so strokes aren't cut */
 }
 .hero-title-line { display: block; }
 .hero-title-line--accent {
@@ -625,7 +703,9 @@ button { cursor: pointer; border: none; background: none; font: inherit; color: 
 }
 .projects-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(440px, 1fr));
+  /* min(440px, 100%) lets the track shrink below 440px on narrow viewports
+     instead of causing horizontal overflow. */
+  grid-template-columns: repeat(auto-fill, minmax(min(440px, 100%), 1fr));
   gap: 24px;
 }
 .project-card {
@@ -761,9 +841,7 @@ button { cursor: pointer; border: none; background: none; font: inherit; color: 
   gap: 12px;
   margin-top: 12px;
 }
-@media (max-width: 700px) {
-  .projects-grid { grid-template-columns: 1fr; }
-}
+/* projects-grid collapses to 1 col automatically via minmax(min(440px,100%),1fr) */
 
 /* ═══════════════════════════════════════════════════════════════
    PINNED STRIP
