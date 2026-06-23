@@ -1,14 +1,10 @@
-import { useRef } from 'react'
+import { useState } from 'react'
 import {
+  AnimatePresence,
   motion,
   useReducedMotion,
-  useScroll,
-  useSpring,
-  useTransform,
 } from 'framer-motion'
 import { team } from '../data/team.js'
-
-const VIEWPORT = { once: true, amount: 0.1 }
 
 function GitHubIcon() {
   return (
@@ -26,6 +22,15 @@ function LinkedInIcon() {
   )
 }
 
+function CloseIcon() {
+  return (
+    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" aria-hidden="true">
+      <line x1="18" y1="6" x2="6" y2="18" />
+      <line x1="6" y1="6" x2="18" y2="18" />
+    </svg>
+  )
+}
+
 function ExternalLinkIcon() {
   return (
     <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
@@ -36,108 +41,170 @@ function ExternalLinkIcon() {
   )
 }
 
-function MemberLinks({ member }) {
-  if (!member.github && !member.linkedin) return null
-
-  return (
-    <div className="team-card-links">
-      {member.github && (
-        <a href={member.github} target="_blank" rel="noopener noreferrer" className="social-link" aria-label={`${member.name} on GitHub`}>
-          <GitHubIcon />
-          GitHub
-        </a>
-      )}
-      {member.linkedin && (
-        <a href={member.linkedin} target="_blank" rel="noopener noreferrer" className="social-link" aria-label={`${member.name} on LinkedIn`}>
-          <LinkedInIcon />
-          LinkedIn
-        </a>
-      )}
-    </div>
-  )
-}
-
-function MemberCard({ member, index }) {
-  return (
-    <article className="team-member-layer" style={{ '--member-index': index }}>
-      <div className="team-member-chip" aria-hidden="true">
-        <span>0{index + 1}</span>
-        <strong>{member.initials}</strong>
-      </div>
-
-      <div className="team-member-card">
-        <div className="team-card-top">
-          <div className="team-card-avatar" aria-hidden="true">
-            <span className="team-card-initials">{member.initials}</span>
-          </div>
-          <div className="team-card-info">
-            <h3 className="team-card-name">{member.name}</h3>
-            <p className="team-card-role">{member.role}</p>
-            {member.venture && (
-              <a href={member.venture.url} target="_blank" rel="noopener noreferrer" className="venture-badge">
-                <span className="venture-badge-dot" />
-                {member.venture.role} @ {member.venture.name}
-                <ExternalLinkIcon />
-              </a>
-            )}
-          </div>
-        </div>
-
-        <blockquote className="team-card-quote">&ldquo;{member.quote}&rdquo;</blockquote>
-        <p className="team-card-bio">{member.bio}</p>
-
-        <div className="team-skill-grid" aria-label={`${member.name} skills`}>
-          {member.skills.map((skill) => (
-            <span key={skill} className="team-skill-tag">{skill}</span>
-          ))}
-        </div>
-
-        <MemberLinks member={member} />
-      </div>
-    </article>
-  )
-}
+const EASE = [0.16, 1, 0.3, 1]
+const EASE_OUT = [0.22, 1, 0.36, 1]
 
 export default function Team() {
+  const [selected, setSelected] = useState(null)
   const prefersReducedMotion = useReducedMotion()
 
+  const open = (member) => {
+    setSelected(member)
+    document.body.style.overflow = 'hidden'
+  }
+  const close = () => {
+    setSelected(null)
+    document.body.style.overflow = ''
+  }
+
   return (
-    <section id="team" className="team-section team-section--scroll">
+    <section id="team" className="team-section">
       <motion.div
         className="team-header"
-        initial={prefersReducedMotion ? {} : { opacity: 0, y: 32 }}
+        initial={prefersReducedMotion ? {} : { opacity: 0, y: 28 }}
         whileInView={{ opacity: 1, y: 0 }}
         viewport={{ once: true, amount: 0.3 }}
-        transition={{ duration: 0.75, ease: [0.16, 1, 0.3, 1] }}
+        transition={{ duration: 0.7, ease: EASE }}
       >
         <h2 className="section-title center">THE <span className="accent">TEAM</span></h2>
-        <p className="section-sub center">Scroll the single showcase. Four people. One standard.</p>
+        <p className="section-sub center">Four people. One standard.</p>
       </motion.div>
 
-      <motion.div
-        className="team-scroll-stage"
-        initial={prefersReducedMotion ? {} : { opacity: 0, y: 36 }}
-        whileInView={{ opacity: 1, y: 0 }}
-        viewport={VIEWPORT}
-        transition={{ duration: 0.8, ease: [0.16, 1, 0.3, 1] }}
-      >
-        <div className="team-scroll-content">
-          <div className="team-scroll-copy">
-            <p className="showcase-kicker">CSS SCROLL · SUBGRID</p>
-            <h3>Meet each member, one scroll beat at a time.</h3>
-            <p>Cards stay readable and links stay clickable while the native CSS view-timeline brings each profile forward in sequence.</p>
-          </div>
-
-          <div className="team-scroll-grid">
-            {team.map((member, index) => (
-              <MemberCard key={member.name} member={member} index={index} />
-            ))}
-            <div className="team-scroll-core" aria-hidden="true">
-              <span>HB</span>
+      {/* Grid */}
+      <div className="team-grid-clean">
+        {team.map((member, i) => (
+          <motion.article
+            key={member.name}
+            layoutId={`card-${member.name}`}
+            className="tcard"
+            onClick={() => open(member)}
+            initial={prefersReducedMotion ? {} : { opacity: 0, y: 40 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true, amount: 0.15 }}
+            transition={{ duration: 0.65, ease: EASE, delay: i * 0.08 }}
+            whileHover={prefersReducedMotion ? {} : { y: -4, transition: { duration: 0.25 } }}
+            role="button"
+            tabIndex={0}
+            aria-label={`View ${member.name} profile`}
+            onKeyDown={(e) => e.key === 'Enter' && open(member)}
+          >
+            <div className="tcard-avatar">
+              <span>{member.initials}</span>
             </div>
-          </div>
-        </div>
-      </motion.div>
+            <div className="tcard-body">
+              <p className="tcard-index">0{i + 1}</p>
+              <h3 className="tcard-name">{member.name}</h3>
+              <p className="tcard-role">{member.role}</p>
+            </div>
+            <div className="tcard-skills">
+              {member.skills.slice(0, 3).map(s => (
+                <span key={s} className="tcard-skill">{s}</span>
+              ))}
+            </div>
+          </motion.article>
+        ))}
+      </div>
+
+      {/* Fullscreen overlay */}
+      <AnimatePresence>
+        {selected && (
+          <>
+            {/* Backdrop */}
+            <motion.div
+              className="team-backdrop"
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+              transition={{ duration: 0.3 }}
+              onClick={close}
+            />
+
+            {/* Expanded card */}
+            <motion.div
+              layoutId={`card-${selected.name}`}
+              className="team-expanded"
+              initial={false}
+              transition={{ duration: prefersReducedMotion ? 0 : 0.55, ease: EASE_OUT }}
+            >
+              {/* Close */}
+              <button className="team-expanded-close" onClick={close} aria-label="Close">
+                <CloseIcon />
+              </button>
+
+              {/* Header */}
+              <div className="team-exp-header">
+                <div className="team-exp-avatar">
+                  <span>{selected.initials}</span>
+                </div>
+                <div>
+                  <h2 className="team-exp-name">{selected.name}</h2>
+                  <p className="team-exp-role">{selected.role}</p>
+                  {selected.venture && (
+                    <a href={selected.venture.url} target="_blank" rel="noopener noreferrer" className="venture-badge">
+                      <span className="venture-badge-dot" />
+                      {selected.venture.role} @ {selected.venture.name}
+                      <ExternalLinkIcon />
+                    </a>
+                  )}
+                </div>
+              </div>
+
+              {/* Quote */}
+              <motion.blockquote
+                className="team-exp-quote"
+                initial={{ opacity: 0, y: 12 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ delay: 0.2, duration: 0.5, ease: EASE }}
+              >
+                &ldquo;{selected.quote}&rdquo;
+              </motion.blockquote>
+
+              {/* Bio */}
+              <motion.p
+                className="team-exp-bio"
+                initial={{ opacity: 0, y: 12 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ delay: 0.27, duration: 0.5, ease: EASE }}
+              >
+                {selected.bio}
+              </motion.p>
+
+              {/* Skills */}
+              <motion.div
+                className="team-exp-skills"
+                initial={{ opacity: 0, y: 8 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ delay: 0.34, duration: 0.45, ease: EASE }}
+              >
+                {selected.skills.map(s => (
+                  <span key={s} className="team-skill-tag">{s}</span>
+                ))}
+              </motion.div>
+
+              {/* Links */}
+              {(selected.github || selected.linkedin) && (
+                <motion.div
+                  className="team-exp-links"
+                  initial={{ opacity: 0 }}
+                  animate={{ opacity: 1 }}
+                  transition={{ delay: 0.4, duration: 0.4 }}
+                >
+                  {selected.github && (
+                    <a href={selected.github} target="_blank" rel="noopener noreferrer" className="social-link">
+                      <GitHubIcon /> GitHub
+                    </a>
+                  )}
+                  {selected.linkedin && (
+                    <a href={selected.linkedin} target="_blank" rel="noopener noreferrer" className="social-link">
+                      <LinkedInIcon /> LinkedIn
+                    </a>
+                  )}
+                </motion.div>
+              )}
+            </motion.div>
+          </>
+        )}
+      </AnimatePresence>
     </section>
   )
 }
