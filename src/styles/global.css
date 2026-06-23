@@ -314,7 +314,7 @@ button { cursor: pointer; border: none; background: none; font: inherit; color: 
   min-height: 100svh;
   display: flex;
   align-items: center;
-  justify-content: center;
+  justify-content: flex-start;
   overflow: hidden;
   padding: 140px var(--pad-x) 80px;
 }
@@ -358,7 +358,9 @@ button { cursor: pointer; border: none; background: none; font: inherit; color: 
 .hero-content {
   position: relative;
   z-index: 2;
+  width: min(860px, 100%);
   max-width: 860px;
+  margin-left: clamp(0px, 4vw, 72px);
   display: flex;
   flex-direction: column;
   gap: 0;
@@ -409,6 +411,32 @@ button { cursor: pointer; border: none; background: none; font: inherit; color: 
   max-width: 520px;
   line-height: 1.75;
   margin-bottom: 40px;
+}
+
+.hero-quote {
+  max-width: 620px;
+  margin: -12px 0 38px;
+  padding: 18px 0 18px 22px;
+  border-left: 2px solid var(--accent);
+  background: linear-gradient(90deg, rgba(37, 99, 235, 0.09), transparent 72%);
+}
+.hero-quote p {
+  font-family: var(--font-display);
+  font-size: clamp(18px, 2.2vw, 28px);
+  font-weight: 650;
+  line-height: 1.18;
+  letter-spacing: -0.03em;
+  color: var(--text);
+}
+.hero-quote cite {
+  display: block;
+  margin-top: 10px;
+  font-family: var(--font-mono);
+  font-size: 11px;
+  font-style: normal;
+  letter-spacing: 0.12em;
+  color: var(--accent-light);
+  text-transform: uppercase;
 }
 .hero-cta {
   display: flex;
@@ -1029,4 +1057,266 @@ button { cursor: pointer; border: none; background: none; font: inherit; color: 
   letter-spacing: 0.2em;
   color: var(--accent-light);
   text-transform: uppercase;
+}
+
+/* ── REQUESTED INTERACTION PASS: HERO TERMINAL / 3D CARDS / TEAM FLIP ── */
+.hero-terminal {
+  width: min(100%, 560px);
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin: -8px 0 24px;
+  padding: 12px 14px;
+  overflow: hidden;
+  background: rgba(11, 15, 24, 0.78);
+  border: 1px solid var(--border-accent);
+  border-radius: var(--radius);
+  box-shadow: 0 0 34px rgba(37, 99, 235, 0.14), inset 0 1px rgba(255,255,255,0.04);
+  font-family: var(--font-mono);
+  font-size: clamp(11px, 1.4vw, 13px);
+  letter-spacing: 0.04em;
+}
+.hero-terminal-prompt {
+  color: var(--accent-light);
+  flex-shrink: 0;
+}
+.hero-terminal-command {
+  color: var(--text);
+  min-width: 0;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.hero-terminal-cursor {
+  width: 7px;
+  height: 1.15em;
+  background: var(--accent-light);
+  box-shadow: 0 0 12px var(--accent-glow-strong);
+  animation: cursorBlink 0.9s steps(2, start) infinite;
+  flex-shrink: 0;
+}
+@keyframes cursorBlink { 50% { opacity: 0; } }
+
+.projects-grid { perspective: 1200px; }
+.project-card {
+  position: relative;
+  transform-style: preserve-3d;
+  will-change: transform;
+}
+.project-card::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  opacity: 0;
+  background: radial-gradient(circle at 50% 0%, rgba(96,165,250,0.18), transparent 42%);
+  transition: opacity 0.3s var(--ease);
+}
+.project-card:hover::after { opacity: 1; }
+.project-cover,
+.project-body { transform: translateZ(22px); }
+
+.team-card {
+  min-height: 340px;
+  padding: 0;
+  perspective: 1100px;
+  outline: none;
+}
+.team-card:focus-visible {
+  border-color: var(--accent-light);
+  box-shadow: 0 0 0 3px rgba(96,165,250,0.18), 0 0 34px var(--accent-glow);
+}
+.team-card-flipper {
+  position: relative;
+  min-height: 100%;
+  transform-style: preserve-3d;
+  transition: transform 0.75s var(--ease);
+}
+.team-card:hover .team-card-flipper,
+.team-card:focus-within .team-card-flipper,
+.team-card:focus .team-card-flipper {
+  transform: rotateY(180deg);
+}
+.team-card-face {
+  min-height: 340px;
+  padding: 36px 32px;
+  backface-visibility: hidden;
+  -webkit-backface-visibility: hidden;
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+}
+.team-card-back {
+  position: absolute;
+  inset: 0;
+  justify-content: center;
+  transform: rotateY(180deg);
+  background:
+    radial-gradient(circle at 20% 10%, rgba(37,99,235,0.22), transparent 34%),
+    linear-gradient(145deg, var(--surface-2), var(--surface));
+}
+.team-card-back-kicker,
+.team-card-back-hint {
+  font-family: var(--font-mono);
+  font-size: 10px;
+  letter-spacing: 0.14em;
+  color: var(--muted);
+  text-transform: uppercase;
+}
+.team-card-back-name {
+  font-family: var(--font-display);
+  font-size: 28px;
+  line-height: 1.05;
+  letter-spacing: -0.03em;
+}
+.team-skill-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 10px;
+}
+.team-skill-tag {
+  font-family: var(--font-mono);
+  font-size: 11px;
+  letter-spacing: 0.06em;
+  color: var(--text);
+  background: rgba(37, 99, 235, 0.12);
+  border: 1px solid var(--border-accent);
+  border-radius: 4px;
+  padding: 10px 12px;
+  text-align: center;
+}
+
+@media (max-width: 640px) {
+  .hero-content { margin-left: 0; }
+  .hero-terminal { align-items: flex-start; flex-direction: column; }
+  .team-card-face { padding: 28px 24px; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .hero-terminal-cursor { animation: none; }
+  .project-card,
+  .project-cover,
+  .project-body,
+  .team-card-flipper { transform: none !important; }
+  .team-card-back { position: static; transform: none; }
+  .team-card-face { backface-visibility: visible; }
+}
+
+/* ── 3D SPATIAL SCROLL ZOOM ─────────────────────────────────── */
+.spatial-zoom-section {
+  position: relative;
+  min-height: 320svh;
+  background:
+    radial-gradient(circle at 50% 50%, rgba(37, 99, 235, 0.12), transparent 36%),
+    linear-gradient(180deg, var(--bg), #03050a 45%, var(--bg));
+  border-block: 1px solid var(--border);
+}
+.spatial-zoom-sticky {
+  position: sticky;
+  top: 0;
+  min-height: 100svh;
+  overflow: clip;
+  display: grid;
+  place-items: center;
+  perspective: 1000px;
+  transform-style: preserve-3d;
+  isolation: isolate;
+}
+.spatial-zoom-sticky::before,
+.spatial-zoom-sticky::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  z-index: -1;
+}
+.spatial-zoom-sticky::before {
+  background-image:
+    linear-gradient(rgba(232, 237, 245, 0.024) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(232, 237, 245, 0.024) 1px, transparent 1px);
+  background-size: 96px 96px;
+  mask-image: radial-gradient(circle at center, #000 10%, transparent 76%);
+}
+.spatial-zoom-sticky::after {
+  background: radial-gradient(ellipse 72% 70% at 50% 50%, transparent 28%, var(--bg) 96%);
+}
+.spatial-zoom-copy {
+  position: absolute;
+  left: var(--pad-x);
+  top: clamp(86px, 12vh, 132px);
+  z-index: 3;
+  max-width: 360px;
+}
+.spatial-zoom-kicker {
+  font-family: var(--font-mono);
+  font-size: 10px;
+  letter-spacing: 0.18em;
+  color: var(--accent-light);
+  text-transform: uppercase;
+  margin-bottom: 10px;
+}
+.spatial-zoom-copy h2 {
+  font-family: var(--font-display);
+  font-size: clamp(30px, 4.2vw, 58px);
+  line-height: 1;
+  letter-spacing: -0.04em;
+}
+.spatial-zoom-grid {
+  width: 100vw;
+  min-height: 100svh;
+  display: grid;
+  grid-template: repeat(4, 25svh) / repeat(4, 25vw);
+  place-items: center;
+  transform-style: preserve-3d;
+}
+.spatial-zoom-item {
+  transform-style: preserve-3d;
+  will-change: transform, opacity, filter;
+  font-family: var(--font-mono);
+  font-size: clamp(18px, 4.4vmin, 54px);
+  font-weight: 300;
+  letter-spacing: -0.04em;
+  white-space: nowrap;
+  color: rgba(232, 237, 245, 0.72);
+  text-shadow: 0 0 28px rgba(37, 99, 235, 0.18);
+}
+.spatial-zoom-item--special,
+.spatial-zoom-item--accent {
+  font-family: var(--font-display);
+  color: var(--text);
+  text-shadow:
+    0 0 60px rgba(37, 99, 235, 0.54),
+    0 0 180px rgba(37, 99, 235, 0.28);
+}
+.spatial-zoom-item--special b {
+  font-size: clamp(84px, 16vmin, 190px);
+  line-height: 0.8;
+  letter-spacing: -0.08em;
+}
+.spatial-zoom-item--accent {
+  color: transparent;
+  -webkit-text-stroke: 1.5px var(--accent-light);
+  font-size: clamp(42px, 9vmin, 124px);
+  font-weight: 800;
+}
+
+@media (max-width: 760px) {
+  .spatial-zoom-section { min-height: 260svh; }
+  .spatial-zoom-copy { top: 96px; max-width: 280px; }
+  .spatial-zoom-grid { grid-template: repeat(4, 25svh) / repeat(4, 25vw); }
+  .spatial-zoom-item { font-size: clamp(13px, 4vmin, 28px); }
+  .spatial-zoom-item--special b { font-size: clamp(58px, 18vmin, 112px); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .spatial-zoom-section { min-height: auto; }
+  .spatial-zoom-sticky {
+    position: relative;
+    min-height: 86svh;
+  }
+  .spatial-zoom-item {
+    opacity: 0.7;
+    filter: none;
+    transform: none !important;
+  }
 }

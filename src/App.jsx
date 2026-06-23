@@ -2,6 +2,7 @@ import { useScroll, useSpring } from 'framer-motion'
 import Nav from './components/Nav.jsx'
 import Hero from './components/Hero.jsx'
 import Ticker from './components/Ticker.jsx'
+import SpatialZoom from './components/SpatialZoom.jsx'
 import About from './components/About.jsx'
 import Team from './components/Team.jsx'
 import Projects from './components/Projects.jsx'
@@ -27,6 +28,7 @@ export default function App() {
       <main>
         <Hero />
         <Ticker />
+        <SpatialZoom />
         <About />
         <Team />
         <Projects />
