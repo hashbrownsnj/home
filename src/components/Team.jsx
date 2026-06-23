@@ -76,72 +76,88 @@ export default function Team() {
             key={member.name}
             className="team-card"
             variants={cv}
+            tabIndex={0}
             whileHover={
               prefersReducedMotion
                 ? {}
                 : { y: -6, transition: { type: 'spring', stiffness: 300, damping: 20 } }
             }
           >
-            {/* Avatar + name row */}
-            <div className="team-card-top">
-              <div className="team-card-avatar" aria-hidden="true">
-                <span className="team-card-initials">{member.initials}</span>
-              </div>
-              <div className="team-card-info">
-                <h3 className="team-card-name">{member.name}</h3>
-                <p className="team-card-role">{member.role}</p>
-                {member.venture && (
-                  <a
-                    href={member.venture.url}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="venture-badge"
-                  >
-                    <span className="venture-badge-dot" />
-                    {member.venture.role} @ {member.venture.name}
-                    <ExternalLinkIcon />
-                  </a>
+            <div className="team-card-flipper">
+              <div className="team-card-face team-card-front">
+                {/* Avatar + name row */}
+                <div className="team-card-top">
+                  <div className="team-card-avatar" aria-hidden="true">
+                    <span className="team-card-initials">{member.initials}</span>
+                  </div>
+                  <div className="team-card-info">
+                    <h3 className="team-card-name">{member.name}</h3>
+                    <p className="team-card-role">{member.role}</p>
+                    {member.venture && (
+                      <a
+                        href={member.venture.url}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="venture-badge"
+                      >
+                        <span className="venture-badge-dot" />
+                        {member.venture.role} @ {member.venture.name}
+                        <ExternalLinkIcon />
+                      </a>
+                    )}
+                  </div>
+                </div>
+
+                {/* Quote */}
+                <blockquote className="team-card-quote">
+                  &ldquo;{member.quote}&rdquo;
+                </blockquote>
+
+                {/* Bio */}
+                <p className="team-card-bio">{member.bio}</p>
+
+                {/* Social links */}
+                {(member.github || member.linkedin) && (
+                  <div className="team-card-links">
+                    {member.github && (
+                      <a
+                        href={member.github}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="social-link"
+                        aria-label={`${member.name} on GitHub`}
+                      >
+                        <GitHubIcon />
+                        GitHub
+                      </a>
+                    )}
+                    {member.linkedin && (
+                      <a
+                        href={member.linkedin}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="social-link"
+                        aria-label={`${member.name} on LinkedIn`}
+                      >
+                        <LinkedInIcon />
+                        LinkedIn
+                      </a>
+                    )}
+                  </div>
                 )}
+              </div>
+
+              <div className="team-card-face team-card-back" aria-label={`${member.name} skills`}>
+                <p className="team-card-back-kicker">CORE STACK</p>
+                <h3 className="team-card-back-name">{member.name}</h3>
+                <div className="team-skill-grid">
+                  {member.skills.map((skill) => (
+                    <span key={skill} className="team-skill-tag">{skill}</span>
+                  ))}
+                </div>
+                <p className="team-card-back-hint">Hover or focus away to return to bio.</p>
               </div>
             </div>
-
-            {/* Quote */}
-            <blockquote className="team-card-quote">
-              &ldquo;{member.quote}&rdquo;
-            </blockquote>
-
-            {/* Bio */}
-            <p className="team-card-bio">{member.bio}</p>
-
-            {/* Social links */}
-            {(member.github || member.linkedin) && (
-              <div className="team-card-links">
-                {member.github && (
-                  <a
-                    href={member.github}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="social-link"
-                    aria-label={`${member.name} on GitHub`}
-                  >
-                    <GitHubIcon />
-                    GitHub
-                  </a>
-                )}
-                {member.linkedin && (
-                  <a
-                    href={member.linkedin}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="social-link"
-                    aria-label={`${member.name} on LinkedIn`}
-                  >
-                    <LinkedInIcon />
-                    LinkedIn
-                  </a>
-                )}
-              </div>
-            )}
           </motion.article>
         ))}
       </motion.div>

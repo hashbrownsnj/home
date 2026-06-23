@@ -1,4 +1,4 @@
-import { useRef } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import {
   motion,
   useScroll,
@@ -22,6 +22,16 @@ const TITLE_WORD = {
   },
 }
 
+const BUILD_LINES = [
+  'shipping secure web apps',
+  'hardening competition images',
+  'designing sharper student tools',
+]
+
+const TYPE_SPEED = 54
+const DELETE_SPEED = 28
+const HOLD_TIME = 1350
+
 const FADE_UP = (delay = 0) => ({
   hidden: { opacity: 0, y: 28 },
   visible: {
@@ -42,8 +52,51 @@ export default function Hero() {
 
   const ghostY = useTransform(scrollYProgress, [0, 1], ['0%', '28%'])
   const ghostOpacity = useTransform(scrollYProgress, [0, 0.65], [0.042, 0])
+  const [typedText, setTypedText] = useState(BUILD_LINES[0])
 
   const reducedVariant = { hidden: {}, visible: {} }
+
+  useEffect(() => {
+    if (prefersReducedMotion) {
+      setTypedText(BUILD_LINES[0])
+      return undefined
+    }
+
+    let lineIndex = 0
+    let charIndex = 0
+    let deleting = false
+    let timeoutId
+
+    const tick = () => {
+      const currentLine = BUILD_LINES[lineIndex]
+      setTypedText(currentLine.slice(0, charIndex))
+
+      if (!deleting && charIndex < currentLine.length) {
+        charIndex += 1
+        timeoutId = window.setTimeout(tick, TYPE_SPEED)
+        return
+      }
+
+      if (!deleting && charIndex === currentLine.length) {
+        deleting = true
+        timeoutId = window.setTimeout(tick, HOLD_TIME)
+        return
+      }
+
+      if (deleting && charIndex > 0) {
+        charIndex -= 1
+        timeoutId = window.setTimeout(tick, DELETE_SPEED)
+        return
+      }
+
+      deleting = false
+      lineIndex = (lineIndex + 1) % BUILD_LINES.length
+      timeoutId = window.setTimeout(tick, TYPE_SPEED)
+    }
+
+    timeoutId = window.setTimeout(tick, 500)
+    return () => window.clearTimeout(timeoutId)
+  }, [prefersReducedMotion])
 
   return (
     <section id="top" className="hero" ref={containerRef}>
@@ -107,6 +160,18 @@ export default function Hero() {
           Always gold. Crispy and hot as hell.
         </motion.p>
 
+        <motion.div
+          className="hero-terminal"
+          variants={prefersReducedMotion ? reducedVariant : FADE_UP(0.74)}
+          initial="hidden"
+          animate="visible"
+          aria-label={`Currently building ${typedText}`}
+        >
+          <span className="hero-terminal-prompt">~/currently-building</span>
+          <span className="hero-terminal-command">{typedText}</span>
+          <span className="hero-terminal-cursor" aria-hidden="true" />
+        </motion.div>
+
         {/* Description */}
         <motion.p
           className="hero-desc"
@@ -119,10 +184,23 @@ export default function Hero() {
           through everything we do. So does a stubborn refusal to ship anything ugly.
         </motion.p>
 
+        <motion.blockquote
+          className="hero-quote"
+          variants={prefersReducedMotion ? reducedVariant : FADE_UP(0.9)}
+          initial="hidden"
+          animate="visible"
+        >
+          <p>
+            &ldquo;The people who are crazy enough to think they can change the
+            world are the ones who do.&rdquo;
+          </p>
+          <cite>— Steve Jobs</cite>
+        </motion.blockquote>
+
         {/* CTAs */}
         <motion.div
           className="hero-cta"
-          variants={prefersReducedMotion ? reducedVariant : FADE_UP(0.96)}
+          variants={prefersReducedMotion ? reducedVariant : FADE_UP(1.04)}
           initial="hidden"
           animate="visible"
         >
