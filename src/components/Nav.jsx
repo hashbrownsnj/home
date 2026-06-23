@@ -10,6 +10,7 @@ const LINKS = [
 
 export default function Nav({ scrollProgress }) {
   const [scrolled, setScrolled] = useState(false)
+  const [menuOpen, setMenuOpen] = useState(false)
   const prefersReducedMotion = useReducedMotion()
 
   useEffect(() => {
@@ -18,6 +19,14 @@ export default function Nav({ scrollProgress }) {
     handler()
     return () => window.removeEventListener('scroll', handler)
   }, [])
+
+  // Lock body scroll when mobile menu is open
+  useEffect(() => {
+    document.body.style.overflow = menuOpen ? 'hidden' : ''
+    return () => { document.body.style.overflow = '' }
+  }, [menuOpen])
+
+  const closeMenu = () => setMenuOpen(false)
 
   return (
     <>
@@ -34,10 +43,11 @@ export default function Nav({ scrollProgress }) {
         transition={{ duration: 0.7, ease: [0.16, 1, 0.3, 1], delay: 0.1 }}
       >
         <div className="nav-inner">
-          <a href="#top" className="nav-logo">
+          <a href="#top" className="nav-logo" onClick={closeMenu}>
             HASH<span>BROWNS</span>
           </a>
 
+          {/* Desktop nav */}
           <div className="nav-links">
             {LINKS.map(({ label, href }) => (
               <a key={label} href={href} className="nav-link">
@@ -54,8 +64,38 @@ export default function Nav({ scrollProgress }) {
             />
             SYSTEM ONLINE
           </div>
+
+          {/* Mobile burger */}
+          <button
+            className={`nav-burger${menuOpen ? ' open' : ''}`}
+            onClick={() => setMenuOpen(o => !o)}
+            aria-label={menuOpen ? 'Close menu' : 'Open menu'}
+            aria-expanded={menuOpen}
+          >
+            <span className="nav-burger-bar" />
+            <span className="nav-burger-bar" />
+            <span className="nav-burger-bar" />
+          </button>
         </div>
       </motion.nav>
+
+      {/* Mobile full-screen overlay menu */}
+      <div className={`nav-mobile-menu${menuOpen ? ' open' : ''}`} role="dialog" aria-modal="true">
+        {LINKS.map(({ label, href }) => (
+          <a
+            key={label}
+            href={href}
+            className="nav-mobile-link"
+            onClick={closeMenu}
+          >
+            {label}
+          </a>
+        ))}
+        <div className="nav-mobile-status">
+          <span className="status-dot" />
+          SYSTEM ONLINE
+        </div>
+      </div>
     </>
   )
 }
