@@ -1231,7 +1231,8 @@ button { cursor: pointer; border: none; background: none; font: inherit; color: 
 /* ── 3D SPATIAL SCROLL ZOOM ─────────────────────────────────── */
 .spatial-zoom-section {
   position: relative;
-  min-height: 420svh;
+  /* tall enough for all items to fly through — sticky fires the whole time */
+  height: 500svh;
   margin-block: -1px;
   background:
     radial-gradient(circle at 50% 44%, rgba(37, 99, 235, 0.16), transparent 34%),
@@ -1241,7 +1242,9 @@ button { cursor: pointer; border: none; background: none; font: inherit; color: 
 .spatial-zoom-sticky {
   position: sticky;
   top: 0;
-  min-height: 100svh;
+  /* exact viewport height — sticky requires this */
+  height: 100svh;
+  width: 100%;
   overflow: clip;
   display: grid;
   place-items: center;
@@ -1319,17 +1322,17 @@ button { cursor: pointer; border: none; background: none; font: inherit; color: 
 }
 
 @media (max-width: 760px) {
-  .spatial-zoom-section { min-height: 340svh; }
+  .spatial-zoom-section { height: 380svh; }
   .spatial-zoom-grid { grid-template: repeat(4, 25svh) / repeat(4, 25vw); }
   .spatial-zoom-item { font-size: clamp(12px, 3.8vmin, 26px); }
   .spatial-zoom-item--special b { font-size: clamp(54px, 17vmin, 104px); }
 }
 
 @media (prefers-reduced-motion: reduce) {
-  .spatial-zoom-section { min-height: auto; }
+  .spatial-zoom-section { height: auto; min-height: 100svh; }
   .spatial-zoom-sticky {
     position: relative;
-    min-height: 86svh;
+    height: 86svh;
   }
   .spatial-zoom-item {
     opacity: 0.72;
@@ -1649,7 +1652,8 @@ button { cursor: pointer; border: none; background: none; font: inherit; color: 
 /* ── FRAMER SCROLLTRIGGER-STYLE IMAGE ZOOM ─────────────────── */
 .scroll-zoom-scene {
   position: relative;
-  min-height: 250svh;
+  /* tall enough that you spend real time scrolling through — sticky fires the whole time */
+  height: 350svh;
   overflow: clip;
   background: #02050a;
   border-block: 1px solid var(--border);
@@ -1657,7 +1661,9 @@ button { cursor: pointer; border: none; background: none; font: inherit; color: 
 .scroll-zoom-sticky {
   position: sticky;
   top: 0;
+  /* must be exact viewport height — not min-height — so sticky works */
   height: 100svh;
+  width: 100%;
   overflow: hidden;
   display: grid;
   place-items: center;
@@ -1722,13 +1728,13 @@ button { cursor: pointer; border: none; background: none; font: inherit; color: 
 }
 
 @media (max-width: 760px) {
-  .scroll-zoom-scene { min-height: 190svh; }
+  .scroll-zoom-scene { height: 280svh; }
   .scroll-zoom-intro h2 { font-size: clamp(44px, 17vw, 76px); }
 }
 
 @media (prefers-reduced-motion: reduce) {
-  .scroll-zoom-scene { min-height: 100svh; }
-  .scroll-zoom-sticky { position: relative; }
+  .scroll-zoom-scene { height: 100svh; }
+  .scroll-zoom-sticky { position: relative; height: 100svh; }
   .scroll-zoom-image { transform: none !important; }
 }
 
