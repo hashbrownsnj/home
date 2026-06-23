@@ -70,7 +70,7 @@ export default function ScrollZoomScene() {
 
   const { scrollYProgress } = useScroll({
     target: ref,
-    offset: ['start start', 'end end'],
+    offset: ['start end', 'end start'],
   })
 
   const smoothProgress = useSpring(scrollYProgress, {
