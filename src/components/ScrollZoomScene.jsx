@@ -44,27 +44,22 @@ const SCENE_IMAGE = `data:image/svg+xml,${encodeURIComponent(`
   <circle cx="900" cy="500" r="560" fill="url(#glow)" filter="url(#soft)"/>
   <circle cx="200" cy="900" r="320" fill="url(#glow2)" filter="url(#soft)"/>
   <path d="M0 820C200 760 380 800 560 730c160-62 300-178 500-128 160 42 300 176 740 108v372H0Z" fill="#020509" opacity="0.97"/>
-  <!-- LED horizon line -->
   <line x1="0" y1="822" x2="1800" y2="822" stroke="#3b82f6" stroke-opacity="0.18" stroke-width="1"/>
   <path d="M0 880c280-68 420-44 580-102 130-47 254-152 420-116 178 39 308 152 670 110" fill="none" stroke="#60a5fa" stroke-opacity="0.5" stroke-width="3" filter="url(#sharp)"/>
   <path d="M0 880c280-68 420-44 580-102 130-47 254-152 420-116 178 39 308 152 670 110" fill="none" stroke="#93c5fd" stroke-opacity="0.25" stroke-width="8" filter="url(#soft)"/>
-  <!-- Stars -->
   <g fill="#e8edf5">
     <circle cx="130" cy="120" r="2.5" opacity="0.9"/><circle cx="290" cy="80" r="1.5" opacity="0.6"/>
     <circle cx="480" cy="200" r="2" opacity="0.7"/><circle cx="650" cy="95" r="3" opacity="0.8"/>
     <circle cx="820" cy="55" r="1.5" opacity="0.5"/><circle cx="1020" cy="115" r="2.5" opacity="0.9"/>
     <circle cx="1180" cy="70" r="2" opacity="0.6"/><circle cx="1340" cy="160" r="1.5" opacity="0.7"/>
     <circle cx="1480" cy="90" r="3" opacity="0.8"/><circle cx="1620" cy="200" r="2" opacity="0.6"/>
-    <circle cx="1720" cy="130" r="2.5" opacity="0.9"/><circle cx="75" cy="300" r="1.5" opacity="0.4"/>
-    <circle cx="1750" cy="350" r="2" opacity="0.5"/>
+    <circle cx="1720" cy="130" r="2.5" opacity="0.9"/>
   </g>
-  <!-- LED dots scattered -->
   <g filter="url(#led-glow)">
     <circle cx="360" cy="780" r="3" fill="#60a5fa" opacity="0.8"/>
     <circle cx="720" cy="760" r="2" fill="#a78bfa" opacity="0.7"/>
     <circle cx="1080" cy="770" r="3" fill="#60a5fa" opacity="0.8"/>
     <circle cx="1440" cy="755" r="2.5" fill="#818cf8" opacity="0.7"/>
-    <circle cx="180" cy="795" r="1.5" fill="#93c5fd" opacity="0.6"/>
     <circle cx="900" cy="750" r="4" fill="#3b82f6" opacity="0.9"/>
     <circle cx="1620" cy="790" r="2" fill="#60a5fa" opacity="0.7"/>
   </g>
@@ -73,6 +68,9 @@ const SCENE_IMAGE = `data:image/svg+xml,${encodeURIComponent(`
 export default function ScrollZoomScene() {
   const ref = useRef(null)
   const prefersReducedMotion = useReducedMotion()
+
+  // KEY FIX: ['start start', 'end end'] — progress goes 0→1 while the
+  // tall section scrolls past, keeping the sticky panel fully in view.
   const { scrollYProgress } = useScroll({
     target: ref,
     offset: ['start start', 'end end'],
@@ -85,26 +83,31 @@ export default function ScrollZoomScene() {
     restDelta: 0.0005,
   })
 
-  const imageScale = useTransform(smoothProgress, [0, 1], [1, 2.2])
-  const imageZ = useTransform(smoothProgress, [0, 1], [0, 280])
-  const heroScale = useTransform(smoothProgress, [0, 1], [1, 1.5])
-  const darkness = useTransform(smoothProgress, [0, 0.7, 1], [0, 0.5, 0.82])
+  const imageScale   = useTransform(smoothProgress, [0, 1], [1, 2.2])
+  const imageZ       = useTransform(smoothProgress, [0, 1], [0, 280])
+  const heroScale    = useTransform(smoothProgress, [0, 1], [1, 1.5])
+  const darkness     = useTransform(smoothProgress, [0, 0.7, 1], [0, 0.5, 0.82])
   const imgTransform = useMotionTemplate`translateZ(${imageZ}px) scale(${imageScale})`
 
-  // Text reveal — slides in as you scroll into scene
-  const textY = useTransform(smoothProgress, [0.05, 0.35], [60, 0])
-  const textOpacity = useTransform(smoothProgress, [0.05, 0.3, 0.8, 1], [0, 1, 1, 0])
-  const subY = useTransform(smoothProgress, [0.15, 0.45], [40, 0])
-  const subOpacity = useTransform(smoothProgress, [0.15, 0.4, 0.8, 1], [0, 1, 1, 0])
+  // Text fades in mid-scroll, out near end
+  const textY       = useTransform(smoothProgress, [0.08, 0.35], [60, 0])
+  const textOpacity = useTransform(smoothProgress, [0.08, 0.32, 0.78, 0.95], [0, 1, 1, 0])
+  const subY        = useTransform(smoothProgress, [0.18, 0.44], [40, 0])
+  const subOpacity  = useTransform(smoothProgress, [0.18, 0.42, 0.78, 0.95], [0, 1, 1, 0])
 
-  // LED scan line
-  const scanY = useTransform(smoothProgress, [0, 1], ['-10%', '110%'])
-
-  const motionStyles = prefersReducedMotion ? undefined : { transform: imgTransform }
+  // LED scan line sweeps top→bottom as you scroll
+  const scanY = useTransform(smoothProgress, [0, 1], ['-4%', '104%'])
 
   return (
-    <section className="scroll-zoom-scene" ref={ref} aria-label="Scroll-driven Hash Browns visual zoom">
+    <section
+      className="scroll-zoom-scene"
+      ref={ref}
+      aria-label="Scroll-driven Hash Browns visual zoom"
+    >
+      {/* This sticky child pins while the tall section scrolls */}
       <div className="scroll-zoom-sticky">
+
+        {/* Background layers */}
         <motion.div
           className="scroll-zoom-hero"
           style={prefersReducedMotion ? undefined : { scale: heroScale }}
@@ -120,7 +123,7 @@ export default function ScrollZoomScene() {
             src={SCENE_IMAGE}
             alt=""
             className="scroll-zoom-image"
-            style={motionStyles}
+            style={prefersReducedMotion ? undefined : { transform: imgTransform }}
           />
         </div>
 
@@ -133,7 +136,7 @@ export default function ScrollZoomScene() {
           />
         )}
 
-        {/* Cinematic overlay text */}
+        {/* Cinematic overlay text — visible mid-scroll */}
         <div className="scroll-zoom-intro">
           <motion.p
             className="szs-kicker"
@@ -158,6 +161,7 @@ export default function ScrollZoomScene() {
             Four students. One standard. Zero corners cut.
           </motion.p>
         </div>
+
       </div>
     </section>
   )
