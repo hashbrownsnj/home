@@ -8,6 +8,7 @@ import {
   useTransform,
 } from 'framer-motion'
 
+
 const SCENE_IMAGE = `data:image/svg+xml,${encodeURIComponent(`
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1800 1200">
   <defs>
@@ -56,8 +57,6 @@ export default function ScrollZoomScene() {
   const imageZ = useTransform(smoothProgress, [0, 1], [0, 250])
   const heroScale = useTransform(smoothProgress, [0, 1], [1, 1.4])
   const darkness = useTransform(smoothProgress, [0, 0.85], [0, 0.76])
-  const titleY = useTransform(smoothProgress, [0, 1], [0, -80])
-  const titleOpacity = useTransform(smoothProgress, [0, 0.72, 1], [1, 0.82, 0.3])
   const imgTransform = useMotionTemplate`translateZ(${imageZ}px) scale(${imageScale})`
 
   const motionStyles = prefersReducedMotion
@@ -85,14 +84,7 @@ export default function ScrollZoomScene() {
             style={motionStyles}
           />
         </div>
-        <motion.div
-          className="scroll-zoom-intro"
-          style={prefersReducedMotion ? undefined : { y: titleY, opacity: titleOpacity }}
-        >
-          <p className="showcase-kicker">FRAMER SCROLL ZOOM</p>
-          <h2>Depth without GSAP.</h2>
-          <p>Scroll through a pinned, cinematic image zoom built with Framer Motion transforms.</p>
-        </motion.div>
+
       </div>
     </section>
   )
