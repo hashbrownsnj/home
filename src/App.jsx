@@ -11,6 +11,7 @@ import Nav from './components/Nav.jsx'
 import Hero from './components/Hero.jsx'
 import Ticker from './components/Ticker.jsx'
 import SpatialZoom from './components/SpatialZoom.jsx'
+import ScrollZoomScene from './components/ScrollZoomScene.jsx'
 import About from './components/About.jsx'
 import Team from './components/Team.jsx'
 import Projects from './components/Projects.jsx'
@@ -117,6 +118,7 @@ export default function App() {
       <main>
         <Hero />
         <Ticker />
+        <ScrollZoomScene />
         <SpatialZoom />
         <ParallaxSection intensity={34}><About /></ParallaxSection>
         <ParallaxSection intensity={44}><Team /></ParallaxSection>
