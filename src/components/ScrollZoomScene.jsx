@@ -1,7 +1,6 @@
 import { useRef } from 'react'
 import {
   motion,
-  useMotionTemplate,
   useReducedMotion,
   useScroll,
   useSpring,
@@ -69,8 +68,6 @@ export default function ScrollZoomScene() {
   const ref = useRef(null)
   const prefersReducedMotion = useReducedMotion()
 
-  // KEY FIX: ['start start', 'end end'] — progress goes 0→1 while the
-  // tall section scrolls past, keeping the sticky panel fully in view.
   const { scrollYProgress } = useScroll({
     target: ref,
     offset: ['start start', 'end end'],
@@ -83,11 +80,12 @@ export default function ScrollZoomScene() {
     restDelta: 0.0005,
   })
 
-  const imageScale   = useTransform(smoothProgress, [0, 1], [1, 2.2])
-  const imageZ       = useTransform(smoothProgress, [0, 1], [0, 280])
-  const heroScale    = useTransform(smoothProgress, [0, 1], [1, 1.5])
-  const darkness     = useTransform(smoothProgress, [0, 0.7, 1], [0, 0.5, 0.82])
-  const imgTransform = useMotionTemplate`translateZ(${imageZ}px) scale(${imageScale})`
+  // Use Framer's individual transform props so perspective is respected.
+  // scale + z as separate props compose correctly with the parent perspective.
+  const imageScale = useTransform(smoothProgress, [0, 1], [1, 2.2])
+  const imageZ     = useTransform(smoothProgress, [0, 1], [0, 280])
+  const heroScale  = useTransform(smoothProgress, [0, 1], [1, 1.5])
+  const darkness   = useTransform(smoothProgress, [0, 0.7, 1], [0, 0.5, 0.82])
 
   // Text fades in mid-scroll, out near end
   const textY       = useTransform(smoothProgress, [0.08, 0.35], [60, 0])
@@ -104,7 +102,6 @@ export default function ScrollZoomScene() {
       ref={ref}
       aria-label="Scroll-driven Hash Browns visual zoom"
     >
-      {/* This sticky child pins while the tall section scrolls */}
       <div className="scroll-zoom-sticky">
 
         {/* Background layers */}
@@ -118,12 +115,27 @@ export default function ScrollZoomScene() {
           style={prefersReducedMotion ? undefined : { opacity: darkness }}
           aria-hidden="true"
         />
+
+        {/*
+          KEY FIX: The image container sets perspective. The img itself uses
+          Framer's z + scale props (not a template string) so the browser can
+          apply the perspective transform correctly without the two transforms
+          fighting each other.
+        */}
         <div className="scroll-zoom-image-container" aria-hidden="true">
           <motion.img
             src={SCENE_IMAGE}
             alt=""
             className="scroll-zoom-image"
-            style={prefersReducedMotion ? undefined : { transform: imgTransform }}
+            style={
+              prefersReducedMotion
+                ? undefined
+                : {
+                    scale: imageScale,
+                    z: imageZ,
+                    transformOrigin: 'center center',
+                  }
+            }
           />
         </div>
 
