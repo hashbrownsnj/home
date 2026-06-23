@@ -1233,7 +1233,6 @@ button { cursor: pointer; border: none; background: none; font: inherit; color: 
   position: relative;
   /* tall enough for all items to fly through — sticky fires the whole time */
   height: 500svh;
-  overflow: visible;
   margin-block: -1px;
   background:
     radial-gradient(circle at 50% 44%, rgba(37, 99, 235, 0.16), transparent 34%),
@@ -1655,10 +1654,7 @@ button { cursor: pointer; border: none; background: none; font: inherit; color: 
   position: relative;
   /* tall enough that you spend real time scrolling through — sticky fires the whole time */
   height: 350svh;
-  /* Do not clip this wrapper: overflow on a sticky ancestor makes browser
-     sticky positioning resolve against the wrapper instead of the viewport,
-     which caused the animation to run after the scene had already passed. */
-  overflow: visible;
+  overflow: clip;
   background: #02050a;
   border-block: 1px solid var(--border);
 }
