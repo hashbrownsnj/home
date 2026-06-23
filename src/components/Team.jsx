@@ -1,21 +1,6 @@
 import { motion, useReducedMotion } from 'framer-motion'
 import { team } from '../data/team.js'
 
-const STAGGER = {
-  hidden: {},
-  visible: { transition: { staggerChildren: 0.13, delayChildren: 0.05 } },
-}
-
-const CARD_VARIANTS = {
-  hidden: { opacity: 0, y: 32, scale: 0.98 },
-  visible: {
-    opacity: 1,
-    y: 0,
-    scale: 1,
-    transition: { duration: 0.75, ease: [0.16, 1, 0.3, 1] },
-  },
-}
-
 const VIEWPORT = { once: true, amount: 0.1 }
 
 function GitHubIcon() {
@@ -44,13 +29,73 @@ function ExternalLinkIcon() {
   )
 }
 
-export default function Team() {
-  const prefersReducedMotion = useReducedMotion()
-  const sv = prefersReducedMotion ? { hidden: {}, visible: {} } : STAGGER
-  const cv = prefersReducedMotion ? { hidden: {}, visible: {} } : CARD_VARIANTS
+function MemberLinks({ member }) {
+  if (!member.github && !member.linkedin) return null
 
   return (
-    <section id="team" className="team-section">
+    <div className="team-card-links">
+      {member.github && (
+        <a href={member.github} target="_blank" rel="noopener noreferrer" className="social-link" aria-label={`${member.name} on GitHub`}>
+          <GitHubIcon />
+          GitHub
+        </a>
+      )}
+      {member.linkedin && (
+        <a href={member.linkedin} target="_blank" rel="noopener noreferrer" className="social-link" aria-label={`${member.name} on LinkedIn`}>
+          <LinkedInIcon />
+          LinkedIn
+        </a>
+      )}
+    </div>
+  )
+}
+
+function MemberCard({ member, index }) {
+  return (
+    <article className="team-member-layer" style={{ '--member-index': index }}>
+      <div className="team-member-chip" aria-hidden="true">
+        <span>0{index + 1}</span>
+        <strong>{member.initials}</strong>
+      </div>
+
+      <div className="team-member-card">
+        <div className="team-card-top">
+          <div className="team-card-avatar" aria-hidden="true">
+            <span className="team-card-initials">{member.initials}</span>
+          </div>
+          <div className="team-card-info">
+            <h3 className="team-card-name">{member.name}</h3>
+            <p className="team-card-role">{member.role}</p>
+            {member.venture && (
+              <a href={member.venture.url} target="_blank" rel="noopener noreferrer" className="venture-badge">
+                <span className="venture-badge-dot" />
+                {member.venture.role} @ {member.venture.name}
+                <ExternalLinkIcon />
+              </a>
+            )}
+          </div>
+        </div>
+
+        <blockquote className="team-card-quote">&ldquo;{member.quote}&rdquo;</blockquote>
+        <p className="team-card-bio">{member.bio}</p>
+
+        <div className="team-skill-grid" aria-label={`${member.name} skills`}>
+          {member.skills.map((skill) => (
+            <span key={skill} className="team-skill-tag">{skill}</span>
+          ))}
+        </div>
+
+        <MemberLinks member={member} />
+      </div>
+    </article>
+  )
+}
+
+export default function Team() {
+  const prefersReducedMotion = useReducedMotion()
+
+  return (
+    <section id="team" className="team-section team-section--scroll">
       <motion.div
         className="team-header"
         initial={prefersReducedMotion ? {} : { opacity: 0, y: 32 }}
@@ -58,108 +103,33 @@ export default function Team() {
         viewport={{ once: true, amount: 0.3 }}
         transition={{ duration: 0.75, ease: [0.16, 1, 0.3, 1] }}
       >
-        <h2 className="section-title center">
-          THE <span className="accent">TEAM</span>
-        </h2>
-        <p className="section-sub center">Four people. One standard.</p>
+        <h2 className="section-title center">THE <span className="accent">TEAM</span></h2>
+        <p className="section-sub center">Scroll the single showcase. Four people. One standard.</p>
       </motion.div>
 
       <motion.div
-        className="team-grid"
-        variants={sv}
-        initial="hidden"
-        whileInView="visible"
+        className="team-scroll-stage"
+        initial={prefersReducedMotion ? {} : { opacity: 0, y: 36 }}
+        whileInView={{ opacity: 1, y: 0 }}
         viewport={VIEWPORT}
+        transition={{ duration: 0.8, ease: [0.16, 1, 0.3, 1] }}
       >
-        {team.map((member) => (
-          <motion.article
-            key={member.name}
-            className="team-card"
-            variants={cv}
-            tabIndex={0}
-            whileHover={
-              prefersReducedMotion
-                ? {}
-                : { y: -6, transition: { type: 'spring', stiffness: 300, damping: 20 } }
-            }
-          >
-            <div className="team-card-flipper">
-              <div className="team-card-face team-card-front">
-                {/* Avatar + name row */}
-                <div className="team-card-top">
-                  <div className="team-card-avatar" aria-hidden="true">
-                    <span className="team-card-initials">{member.initials}</span>
-                  </div>
-                  <div className="team-card-info">
-                    <h3 className="team-card-name">{member.name}</h3>
-                    <p className="team-card-role">{member.role}</p>
-                    {member.venture && (
-                      <a
-                        href={member.venture.url}
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        className="venture-badge"
-                      >
-                        <span className="venture-badge-dot" />
-                        {member.venture.role} @ {member.venture.name}
-                        <ExternalLinkIcon />
-                      </a>
-                    )}
-                  </div>
-                </div>
+        <div className="team-scroll-content">
+          <div className="team-scroll-copy">
+            <p className="showcase-kicker">CSS SCROLL · SUBGRID</p>
+            <h3>Meet each member, one scroll beat at a time.</h3>
+            <p>Cards stay readable and links stay clickable while the native CSS view-timeline brings each profile forward in sequence.</p>
+          </div>
 
-                {/* Quote */}
-                <blockquote className="team-card-quote">
-                  &ldquo;{member.quote}&rdquo;
-                </blockquote>
-
-                {/* Bio */}
-                <p className="team-card-bio">{member.bio}</p>
-
-                {/* Social links */}
-                {(member.github || member.linkedin) && (
-                  <div className="team-card-links">
-                    {member.github && (
-                      <a
-                        href={member.github}
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        className="social-link"
-                        aria-label={`${member.name} on GitHub`}
-                      >
-                        <GitHubIcon />
-                        GitHub
-                      </a>
-                    )}
-                    {member.linkedin && (
-                      <a
-                        href={member.linkedin}
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        className="social-link"
-                        aria-label={`${member.name} on LinkedIn`}
-                      >
-                        <LinkedInIcon />
-                        LinkedIn
-                      </a>
-                    )}
-                  </div>
-                )}
-              </div>
-
-              <div className="team-card-face team-card-back" aria-label={`${member.name} skills`}>
-                <p className="team-card-back-kicker">CORE STACK</p>
-                <h3 className="team-card-back-name">{member.name}</h3>
-                <div className="team-skill-grid">
-                  {member.skills.map((skill) => (
-                    <span key={skill} className="team-skill-tag">{skill}</span>
-                  ))}
-                </div>
-                <p className="team-card-back-hint">Hover or focus away to return to bio.</p>
-              </div>
+          <div className="team-scroll-grid">
+            {team.map((member, index) => (
+              <MemberCard key={member.name} member={member} index={index} />
+            ))}
+            <div className="team-scroll-core" aria-hidden="true">
+              <span>HB</span>
             </div>
-          </motion.article>
-        ))}
+          </div>
+        </div>
       </motion.div>
     </section>
   )
