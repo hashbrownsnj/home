@@ -180,7 +180,7 @@ export default function Hero() {
           animate="visible"
         >
           We&rsquo;re a small team of student developers building things that matter
-          to us — fast, sharp, and without cutting corners. Cybersecurity runs
+          to us. Fast, sharp, and without cutting corners. Cybersecurity runs
           through everything we do. So does a stubborn refusal to ship anything ugly.
         </motion.p>
 

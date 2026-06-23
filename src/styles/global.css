@@ -438,6 +438,32 @@ button { cursor: pointer; border: none; background: none; font: inherit; color: 
   color: var(--accent-light);
   text-transform: uppercase;
 }
+
+.hero-quote {
+  max-width: 620px;
+  margin: -12px 0 38px;
+  padding: 18px 0 18px 22px;
+  border-left: 2px solid var(--accent);
+  background: linear-gradient(90deg, rgba(37, 99, 235, 0.09), transparent 72%);
+}
+.hero-quote p {
+  font-family: var(--font-display);
+  font-size: clamp(18px, 2.2vw, 28px);
+  font-weight: 650;
+  line-height: 1.18;
+  letter-spacing: -0.03em;
+  color: var(--text);
+}
+.hero-quote cite {
+  display: block;
+  margin-top: 10px;
+  font-family: var(--font-mono);
+  font-size: 11px;
+  font-style: normal;
+  letter-spacing: 0.12em;
+  color: var(--accent-light);
+  text-transform: uppercase;
+}
 .hero-cta {
   display: flex;
   align-items: center;
