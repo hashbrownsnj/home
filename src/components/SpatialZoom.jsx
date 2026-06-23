@@ -1,5 +1,6 @@
 import {
   motion,
+  useMotionTemplate,
   useReducedMotion,
   useScroll,
   useSpring,
@@ -56,10 +57,10 @@ function ZoomItem({ item, progress, prefersReducedMotion }) {
   const blurPx  = useTransform(progress, [start, mid, end], [12, 0, 13])
   const rotate  = useTransform(progress, [start, mid, end], [-7, 0, 7])
 
-  // Framer accepts filter as a MotionValue string via useTransform — but
-  // filter can't be a first-class prop like x/y/z. Keep it as a template
-  // that only drives filter (not transform), which is safe.
-  const filter  = useTransform(blurPx, (v) => `blur(${v}px)`)
+  // useMotionTemplate is required for string CSS values like filter —
+  // useTransform(v, fn) returns a typed MotionValue<string> that Framer
+  // can't map to a CSS property. useMotionTemplate produces the correct type.
+  const filter  = useMotionTemplate`blur(${blurPx}px)`
 
   return (
     <motion.div
