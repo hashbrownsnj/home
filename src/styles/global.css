@@ -1928,3 +1928,153 @@ html, body {
   background: linear-gradient(90deg, var(--accent), var(--led-blue), var(--led-purple));
   box-shadow: 0 0 14px rgba(96, 165, 250, 0.6), 0 0 28px rgba(96, 165, 250, 0.3);
 }
+
+/* ═══════════════════════════════════════════════════════════════
+   SCROLL ZOOM SCENE  (prefix: szs-)
+   ═══════════════════════════════════════════════════════════════ */
+
+/* Outer section: 300svh scroll container, clips overflow without
+   collapsing any 3D context further down the tree */
+.szs-outer {
+  position: relative;
+  width: 100%;
+  height: 300svh;
+  overflow: clip;
+}
+
+/* Sticky viewport: pinned, perspective set here.
+   MUST NOT have: overflow, isolation, will-change, filter */
+.szs-sticky {
+  position: sticky;
+  top: 0;
+  height: 100svh;
+  perspective: 500px;
+  transform-style: preserve-3d;
+}
+
+/* Image container: child of sticky — CAN have overflow:hidden,
+   it is not the preserve-3d ancestor */
+.szs-img-wrap {
+  position: absolute;
+  inset: 0;
+  overflow: hidden;
+}
+
+.szs-img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: center;
+}
+
+/* Full-viewport darkening overlay */
+.szs-overlay {
+  position: absolute;
+  inset: 0;
+  background: #000;
+  pointer-events: none;
+}
+
+/* Cinematic text — centred over the viewport */
+.szs-text {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 16px;
+  pointer-events: none;
+  text-align: center;
+  padding: 0 var(--pad-x);
+}
+
+.szs-heading {
+  font-family: var(--font-display);
+  font-size: clamp(40px, 7vw, 96px);
+  font-weight: 800;
+  letter-spacing: -0.03em;
+  line-height: 1;
+  color: var(--text);
+  text-shadow: 0 0 80px rgba(37, 99, 235, 0.5),
+               0 2px 40px rgba(0, 0, 0, 0.8);
+}
+
+.szs-sub {
+  font-family: var(--font-mono);
+  font-size: clamp(12px, 1.8vw, 18px);
+  letter-spacing: 0.25em;
+  text-transform: uppercase;
+  color: var(--accent-light);
+  opacity: 0.9;
+}
+
+
+/* ═══════════════════════════════════════════════════════════════
+   SPATIAL ZOOM  (prefix: spz-)
+   ═══════════════════════════════════════════════════════════════ */
+
+/* Outer section: 300svh scroll container */
+.spz-outer {
+  position: relative;
+  width: 100%;
+  height: 300svh;
+  overflow: clip;
+}
+
+/* Sticky viewport: pinned, perspective + preserve-3d here.
+   MUST NOT have: overflow, isolation, will-change, filter */
+.spz-sticky {
+  position: sticky;
+  top: 0;
+  height: 100svh;
+  perspective: 1000px;
+  transform-style: preserve-3d;
+}
+
+/* 4×4 grid covering full sticky viewport */
+.spz-grid {
+  display: grid;
+  grid-template-rows: repeat(4, 25svh);
+  grid-template-columns: repeat(4, 25svw);
+  place-items: center;
+  width: 100%;
+  height: 100%;
+  transform-style: preserve-3d;
+}
+
+/* Base grid item */
+.spz-item {
+  font-family: var(--font-display);
+  font-size: clamp(14px, 2.2vw, 28px);
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  color: var(--text);
+  transform-style: preserve-3d;
+  user-select: none;
+  pointer-events: none;
+  white-space: nowrap;
+}
+
+/* Special 2×2 HASH item */
+.spz-item--special {
+  grid-row: 2 / span 2;
+  grid-column: 2 / span 2;
+  font-size: clamp(72px, 14vw, 180px);
+  font-weight: 900;
+  letter-spacing: -0.04em;
+  color: var(--text);
+  text-shadow: 0 0 120px rgba(37, 99, 235, 0.6),
+               0 0 40px rgba(37, 99, 235, 0.3);
+  line-height: 1;
+}
+
+/* Accent "BROWNS" — outline / stroke text */
+.spz-item--accent {
+  color: transparent;
+  -webkit-text-stroke: 1.5px var(--accent-light);
+  text-stroke: 1.5px var(--accent-light);
+  font-size: clamp(20px, 3vw, 40px);
+  filter: drop-shadow(0 0 12px var(--accent-mid));
+}
