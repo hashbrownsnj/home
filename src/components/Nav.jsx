@@ -8,7 +8,7 @@ const LINKS = [
   { label: 'Connect', href: '#connect' },
 ]
 
-export default function Nav({ scrollProgress }) {
+export default function Nav() {
   const [scrolled, setScrolled] = useState(false)
   const [menuOpen, setMenuOpen] = useState(false)
   const prefersReducedMotion = useReducedMotion()
@@ -30,12 +30,6 @@ export default function Nav({ scrollProgress }) {
 
   return (
     <>
-      {/* Scroll progress bar */}
-      <motion.div
-        className="scroll-progress"
-        style={{ scaleX: scrollProgress, transformOrigin: 'left' }}
-      />
-
       <motion.nav
         className={`nav${scrolled ? ' nav--scrolled' : ''}`}
         initial={prefersReducedMotion ? {} : { y: -72, opacity: 0 }}
