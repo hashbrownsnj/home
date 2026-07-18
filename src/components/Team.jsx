@@ -136,148 +136,152 @@ export default function Team() {
               aria-hidden="true"
             />
 
-            {/* Modal — proper fixed sizing with overflow scroll */}
-            <motion.div
-              className="team-modal"
-              role="dialog"
-              aria-modal="true"
-              aria-label={`${selected.name} profile`}
-              initial={{ opacity: 0, scale: 0.94, y: 24 }}
-              animate={{ opacity: 1, scale: 1, y: 0 }}
-              exit={{ opacity: 0, scale: 0.96, y: 12 }}
-              transition={{ duration: 0.45, ease: EASE }}
-            >
-              {/* LED top bar */}
-              <div className="team-modal-ledbar" aria-hidden="true">
-                <span className="team-modal-led team-modal-led--red" />
-                <span className="team-modal-led team-modal-led--yellow" />
-                <span className="team-modal-led team-modal-led--green" />
-              </div>
-
-              {/* Scrollable body */}
-              <div className="team-modal-scroll">
-
-                {/* Close */}
-                <button className="team-modal-close" onClick={close} aria-label="Close profile">
-                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
-                </button>
-
-                {/* Header */}
-                <div className="team-modal-header">
-                  <motion.div
-                    className="team-modal-avatar"
-                    animate={prefersReducedMotion ? {} : {
-                      boxShadow: [
-                        '0 0 18px rgba(96,165,250,0.4)',
-                        '0 0 36px rgba(96,165,250,0.7)',
-                        '0 0 18px rgba(96,165,250,0.4)',
-                      ]
-                    }}
-                    transition={{ duration: 2.4, repeat: Infinity, ease: 'easeInOut' }}
-                  >
-                    <span>{selected.initials}</span>
-                  </motion.div>
-                  <div className="team-modal-info">
-                    <motion.h2
-                      className="team-modal-name"
-                      initial={{ opacity: 0, x: -16 }}
-                      animate={{ opacity: 1, x: 0 }}
-                      transition={{ delay: 0.1, duration: 0.5, ease: EASE }}
-                    >
-                      {selected.name}
-                    </motion.h2>
-                    <motion.p
-                      className="team-modal-role"
-                      initial={{ opacity: 0, x: -12 }}
-                      animate={{ opacity: 1, x: 0 }}
-                      transition={{ delay: 0.16, duration: 0.5, ease: EASE }}
-                    >
-                      {selected.role}
-                    </motion.p>
-                    {selected.venture && (
-                      <motion.a
-                        href={selected.venture.url}
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        className="venture-badge"
-                        initial={{ opacity: 0 }}
-                        animate={{ opacity: 1 }}
-                        transition={{ delay: 0.22, duration: 0.4 }}
-                      >
-                        <span className="venture-badge-dot" />
-                        {selected.venture.role} @ {selected.venture.name}
-                        <ExternalLinkIcon />
-                      </motion.a>
-                    )}
-                  </div>
+            {/* Centering wrapper — the modal itself is only ever positioned by
+                flexbox here, so Framer Motion's animated transform never
+                fights with a CSS translate(-50%,-50%) offset. */}
+            <div className="team-modal-overlay">
+              <motion.div
+                className="team-modal"
+                role="dialog"
+                aria-modal="true"
+                aria-label={`${selected.name} profile`}
+                initial={{ opacity: 0, scale: 0.94, y: 24 }}
+                animate={{ opacity: 1, scale: 1, y: 0 }}
+                exit={{ opacity: 0, scale: 0.96, y: 12 }}
+                transition={{ duration: 0.45, ease: EASE }}
+              >
+                {/* LED top bar */}
+                <div className="team-modal-ledbar" aria-hidden="true">
+                  <span className="team-modal-led team-modal-led--red" />
+                  <span className="team-modal-led team-modal-led--yellow" />
+                  <span className="team-modal-led team-modal-led--green" />
                 </div>
 
-                {/* Quote */}
-                <motion.blockquote
-                  className="team-modal-quote"
-                  initial={{ opacity: 0, y: 14 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  transition={{ delay: 0.2, duration: 0.55, ease: EASE }}
-                >
-                  &ldquo;{selected.quote}&rdquo;
-                </motion.blockquote>
+                {/* Scrollable body */}
+                <div className="team-modal-scroll">
 
-                {/* Bio */}
-                <motion.p
-                  className="team-modal-bio"
-                  initial={{ opacity: 0, y: 14 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  transition={{ delay: 0.28, duration: 0.55, ease: EASE }}
-                >
-                  {selected.bio}
-                </motion.p>
+                  {/* Close */}
+                  <button className="team-modal-close" onClick={close} aria-label="Close profile">
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+                  </button>
 
-                {/* Skills */}
-                <motion.div
-                  className="team-modal-skills"
-                  initial={{ opacity: 0, y: 10 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  transition={{ delay: 0.36, duration: 0.45, ease: EASE }}
-                >
-                  <p className="team-modal-label">SKILLS</p>
-                  <div className="team-modal-skill-list">
-                    {selected.skills.map((s, idx) => (
-                      <motion.span
-                        key={s}
-                        className="team-skill-tag"
-                        initial={{ opacity: 0, scale: 0.85 }}
-                        animate={{ opacity: 1, scale: 1 }}
-                        transition={{ delay: 0.38 + idx * 0.04, duration: 0.3 }}
+                  {/* Header */}
+                  <div className="team-modal-header">
+                    <motion.div
+                      className="team-modal-avatar"
+                      animate={prefersReducedMotion ? {} : {
+                        boxShadow: [
+                          '0 0 18px rgba(96,165,250,0.4)',
+                          '0 0 36px rgba(96,165,250,0.7)',
+                          '0 0 18px rgba(96,165,250,0.4)',
+                        ]
+                      }}
+                      transition={{ duration: 2.4, repeat: Infinity, ease: 'easeInOut' }}
+                    >
+                      <span>{selected.initials}</span>
+                    </motion.div>
+                    <div className="team-modal-info">
+                      <motion.h2
+                        className="team-modal-name"
+                        initial={{ opacity: 0, x: -16 }}
+                        animate={{ opacity: 1, x: 0 }}
+                        transition={{ delay: 0.1, duration: 0.5, ease: EASE }}
                       >
-                        {s}
-                      </motion.span>
-                    ))}
+                        {selected.name}
+                      </motion.h2>
+                      <motion.p
+                        className="team-modal-role"
+                        initial={{ opacity: 0, x: -12 }}
+                        animate={{ opacity: 1, x: 0 }}
+                        transition={{ delay: 0.16, duration: 0.5, ease: EASE }}
+                      >
+                        {selected.role}
+                      </motion.p>
+                      {selected.venture && (
+                        <motion.a
+                          href={selected.venture.url}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className="venture-badge"
+                          initial={{ opacity: 0 }}
+                          animate={{ opacity: 1 }}
+                          transition={{ delay: 0.22, duration: 0.4 }}
+                        >
+                          <span className="venture-badge-dot" />
+                          {selected.venture.role} @ {selected.venture.name}
+                          <ExternalLinkIcon />
+                        </motion.a>
+                      )}
+                    </div>
                   </div>
-                </motion.div>
 
-                {/* Social links */}
-                {(selected.github || selected.linkedin) && (
-                  <motion.div
-                    className="team-modal-links"
-                    initial={{ opacity: 0 }}
-                    animate={{ opacity: 1 }}
-                    transition={{ delay: 0.44, duration: 0.4 }}
+                  {/* Quote */}
+                  <motion.blockquote
+                    className="team-modal-quote"
+                    initial={{ opacity: 0, y: 14 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    transition={{ delay: 0.2, duration: 0.55, ease: EASE }}
                   >
-                    {selected.github && (
-                      <a href={selected.github} target="_blank" rel="noopener noreferrer" className="social-link">
-                        <GitHubIcon /> GitHub
-                      </a>
-                    )}
-                    {selected.linkedin && (
-                      <a href={selected.linkedin} target="_blank" rel="noopener noreferrer" className="social-link">
-                        <LinkedInIcon /> LinkedIn
-                      </a>
-                    )}
-                  </motion.div>
-                )}
+                    &ldquo;{selected.quote}&rdquo;
+                  </motion.blockquote>
 
-              </div>
-            </motion.div>
+                  {/* Bio */}
+                  <motion.p
+                    className="team-modal-bio"
+                    initial={{ opacity: 0, y: 14 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    transition={{ delay: 0.28, duration: 0.55, ease: EASE }}
+                  >
+                    {selected.bio}
+                  </motion.p>
+
+                  {/* Skills */}
+                  <motion.div
+                    className="team-modal-skills"
+                    initial={{ opacity: 0, y: 10 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    transition={{ delay: 0.36, duration: 0.45, ease: EASE }}
+                  >
+                    <p className="team-modal-label">SKILLS</p>
+                    <div className="team-modal-skill-list">
+                      {selected.skills.map((s, idx) => (
+                        <motion.span
+                          key={s}
+                          className="team-skill-tag"
+                          initial={{ opacity: 0, scale: 0.85 }}
+                          animate={{ opacity: 1, scale: 1 }}
+                          transition={{ delay: 0.38 + idx * 0.04, duration: 0.3 }}
+                        >
+                          {s}
+                        </motion.span>
+                      ))}
+                    </div>
+                  </motion.div>
+
+                  {/* Social links */}
+                  {(selected.github || selected.linkedin) && (
+                    <motion.div
+                      className="team-modal-links"
+                      initial={{ opacity: 0 }}
+                      animate={{ opacity: 1 }}
+                      transition={{ delay: 0.44, duration: 0.4 }}
+                    >
+                      {selected.github && (
+                        <a href={selected.github} target="_blank" rel="noopener noreferrer" className="social-link">
+                          <GitHubIcon /> GitHub
+                        </a>
+                      )}
+                      {selected.linkedin && (
+                        <a href={selected.linkedin} target="_blank" rel="noopener noreferrer" className="social-link">
+                          <LinkedInIcon /> LinkedIn
+                        </a>
+                      )}
+                    </motion.div>
+                  )}
+
+                </div>
+              </motion.div>
+            </div>
           </>
         )}
       </AnimatePresence>
