@@ -1,10 +1,5 @@
-import { useEffect, useRef, useState } from 'react'
-import {
-  motion,
-  useScroll,
-  useTransform,
-  useReducedMotion,
-} from 'framer-motion'
+import { useEffect, useState } from 'react'
+import { motion, useReducedMotion } from 'framer-motion'
 
 const TITLE_CONTAINER = {
   hidden: {},
@@ -43,15 +38,6 @@ const FADE_UP = (delay = 0) => ({
 
 export default function Hero() {
   const prefersReducedMotion = useReducedMotion()
-  const containerRef = useRef(null)
-
-  const { scrollYProgress } = useScroll({
-    target: containerRef,
-    offset: ['start start', 'end start'],
-  })
-
-  const ghostY = useTransform(scrollYProgress, [0, 1], ['0%', '28%'])
-  const ghostOpacity = useTransform(scrollYProgress, [0, 0.65], [0.042, 0])
   const [typedText, setTypedText] = useState(BUILD_LINES[0])
 
   const reducedVariant = { hidden: {}, visible: {} }
@@ -99,16 +85,12 @@ export default function Hero() {
   }, [prefersReducedMotion])
 
   return (
-    <section id="top" className="hero" ref={containerRef}>
+    <section id="top" className="hero">
       {/* Parallax ghost letterform */}
       <motion.div
         className="hero-ghost"
         aria-hidden="true"
-        style={
-          prefersReducedMotion
-            ? { opacity: 0.042 }
-            : { y: ghostY, opacity: ghostOpacity }
-        }
+        style={{ opacity: 0.042 }}
       >
         HB
       </motion.div>
@@ -222,21 +204,7 @@ export default function Hero() {
         aria-hidden="true"
       >
         <span className="scroll-cue-label">SCROLL</span>
-        <motion.div
-          className="scroll-cue-line"
-          animate={
-            prefersReducedMotion
-              ? {}
-              : { scaleY: [0, 1, 0] }
-          }
-          transition={{
-            duration: 1.8,
-            repeat: Infinity,
-            ease: [0.4, 0, 0.6, 1],
-            repeatDelay: 0.4,
-          }}
-          style={{ transformOrigin: 'top center' }}
-        />
+        <div className="scroll-cue-line" />
       </motion.div>
     </section>
   )
