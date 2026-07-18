@@ -986,7 +986,7 @@ button { cursor: pointer; border: none; background: none; font: inherit; color: 
 }
 .contact-title {
   font-family: var(--font-display);
-  font-size: clamp(52px, 9vw, 120px);
+  font-size: clamp(40px, 9vw, 120px);
   font-weight: 800;
   line-height: 0.95;
   letter-spacing: -0.04em;
@@ -1589,12 +1589,13 @@ button { cursor: pointer; border: none; background: none; font: inherit; color: 
   filter: drop-shadow(0 0 20px rgba(96, 165, 250, 0.3));
 }
 
-/* Ensure hero section doesn't overflow on mobile */
-@media (max-width: 480px) {
-  .hero {
-    padding: 96px 20px 60px;
-    min-height: 100svh;
-  }
+/* Ensure hero section never overflows horizontally. The old values sized
+   BROWNS to ~97% of the available width at common phone widths — any
+   underestimate of Syne's actual glyph width (it's a wide display face)
+   pushed the -webkit-text-stroke past the edge, and the site-wide
+   overflow-x:hidden guard clipped it instead of showing a scrollbar.
+   These values keep real headroom (~65-80% width usage) at every size. */
+@media (max-width: 760px) {
   .hero-content {
     margin-left: 0;
     gap: 0;
@@ -1602,11 +1603,24 @@ button { cursor: pointer; border: none; background: none; font: inherit; color: 
     max-width: 100%;
   }
   .hero-title {
-    font-size: clamp(52px, 18vw, 80px);
+    font-size: clamp(40px, 12vw, 96px);
+  }
+}
+
+@media (max-width: 480px) {
+  .hero {
+    padding: 96px 20px 60px;
+    min-height: 100svh;
+  }
+  .hero-title {
+    font-size: clamp(38px, 15vw, 68px);
   }
   .hero-cta {
     flex-direction: column;
     align-items: flex-start;
+  }
+  .contact-title {
+    font-size: clamp(34px, 12vw, 52px);
   }
 }
 
