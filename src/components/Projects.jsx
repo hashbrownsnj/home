@@ -1,5 +1,5 @@
 import { useState } from 'react'
-import { motion, useMotionValue, useReducedMotion, useSpring, useTransform } from 'framer-motion'
+import { motion, useReducedMotion } from 'framer-motion'
 import { projects } from '../data/projects.js'
 
 const STATUS_META = {
@@ -60,36 +60,14 @@ function ProjectCover({ project }) {
 }
 
 function ProjectCard({ project, variants, prefersReducedMotion }) {
-  const pointerX = useMotionValue(0)
-  const pointerY = useMotionValue(0)
-  const rotateXRaw = useTransform(pointerY, [-0.5, 0.5], [13, -13])
-  const rotateYRaw = useTransform(pointerX, [-0.5, 0.5], [-15, 15])
-  const rotateX = useSpring(rotateXRaw, { stiffness: 260, damping: 24 })
-  const rotateY = useSpring(rotateYRaw, { stiffness: 260, damping: 24 })
-
-  function handlePointerMove(event) {
-    if (prefersReducedMotion) return
-    const rect = event.currentTarget.getBoundingClientRect()
-    pointerX.set((event.clientX - rect.left) / rect.width - 0.5)
-    pointerY.set((event.clientY - rect.top) / rect.height - 0.5)
-  }
-
-  function resetTilt() {
-    pointerX.set(0)
-    pointerY.set(0)
-  }
-
   return (
     <motion.article
       className="project-card"
       variants={variants}
-      onPointerMove={handlePointerMove}
-      onPointerLeave={resetTilt}
-      style={prefersReducedMotion ? undefined : { rotateX, rotateY, transformPerspective: 900 }}
       whileHover={
         prefersReducedMotion
           ? {}
-          : { y: -10, scale: 1.015, transition: { type: 'spring', stiffness: 300, damping: 20 } }
+          : { y: -6, transition: { type: 'spring', stiffness: 300, damping: 22 } }
       }
     >
       <ProjectCover project={project} />
