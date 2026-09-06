@@ -51,3 +51,70 @@ export async function submitApplication(payload) {
 
   return data
 }
+
+// ── Admin API ──────────────────────────────────────────────────────
+// All admin requests send credentials (cookies) and a custom header that
+// doubles as a lightweight CSRF guard (see server/src/middleware/requireAdmin.js).
+
+async function adminFetch(path, options = {}) {
+  let response
+  try {
+    response = await fetch(`${API_BASE_URL}${path}`, {
+      credentials: 'include',
+      headers: {
+        'Content-Type': 'application/json',
+        'X-Requested-With': 'hashbrowns-admin',
+        ...(options.headers || {}),
+      },
+      ...options,
+    })
+  } catch (networkError) {
+    throw new ApiError('Could not reach the server. Check your connection and try again.', 0, networkError)
+  }
+
+  let data = null
+  try {
+    data = await response.json()
+  } catch {
+    // no body
+  }
+
+  if (!response.ok) {
+    throw new ApiError(data?.message || 'Request failed.', response.status, data?.errors)
+  }
+
+  return data
+}
+
+export function loginAdmin(username, password) {
+  return adminFetch('/api/auth/login', {
+    method: 'POST',
+    body: JSON.stringify({ username, password }),
+  })
+}
+
+export function logoutAdmin() {
+  return adminFetch('/api/auth/logout', { method: 'POST' })
+}
+
+export function fetchCurrentAdmin() {
+  return adminFetch('/api/auth/me')
+}
+
+export function fetchApplications(params = {}) {
+  const query = new URLSearchParams(
+    Object.fromEntries(Object.entries(params).filter(([, v]) => v !== undefined && v !== ''))
+  ).toString()
+  return adminFetch(`/api/applications${query ? `?${query}` : ''}`)
+}
+
+export function fetchApplication(id) {
+  return adminFetch(`/api/applications/${id}`)
+}
+
+export function updateApplicationStatus(id, status) {
+  return adminFetch(`/api/applications/${id}/status`, {
+    method: 'PATCH',
+    body: JSON.stringify({ status }),
+  })
+}

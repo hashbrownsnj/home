@@ -4,6 +4,10 @@ import { AnimatePresence, motion } from 'framer-motion'
 import Nav from './components/Nav.jsx'
 import Home from './pages/Home.jsx'
 import Apply from './pages/Apply.jsx'
+import AdminLogin from './pages/admin/AdminLogin.jsx'
+import AdminDashboard from './pages/admin/AdminDashboard.jsx'
+import ProtectedRoute from './components/admin/ProtectedRoute.jsx'
+import { AdminAuthProvider } from './context/AdminAuthContext.jsx'
 
 function LoaderOverlay() {
   return (
@@ -57,10 +61,33 @@ function ScrollManager() {
 
 export default function App() {
   const [isLoading, setIsLoading] = useState(true)
+  const location = useLocation()
+  const isAdminRoute = location.pathname.startsWith('/admin')
+
   useEffect(() => {
     const timeoutId = window.setTimeout(() => setIsLoading(false), 1650)
     return () => window.clearTimeout(timeoutId)
   }, [])
+
+  // The admin area is a separate, self-contained surface — it skips the
+  // marketing-site chrome (intro loader, nav, grain overlay) entirely.
+  if (isAdminRoute) {
+    return (
+      <AdminAuthProvider>
+        <Routes>
+          <Route path="/admin/login" element={<AdminLogin />} />
+          <Route
+            path="/admin"
+            element={
+              <ProtectedRoute>
+                <AdminDashboard />
+              </ProtectedRoute>
+            }
+          />
+        </Routes>
+      </AdminAuthProvider>
+    )
+  }
 
   return (
     <>

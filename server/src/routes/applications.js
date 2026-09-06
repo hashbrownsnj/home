@@ -1,11 +1,22 @@
 import { Router } from 'express'
+import rateLimit from 'express-rate-limit'
 import Application from '../models/Application.js'
 import { validateApplication } from '../utils/validateApplication.js'
+import { requireAdmin, requireFetchHeader } from '../middleware/requireAdmin.js'
 
 const router = Router()
 
+// Throttle public submissions to make it harder to spam the form.
+const submitRateLimiter = rateLimit({
+  windowMs: 60 * 60 * 1000,
+  limit: 10,
+  standardHeaders: true,
+  legacyHeaders: false,
+  message: { message: 'Too many submissions from this address. Please try again later.' },
+})
+
 // POST /api/applications — create a new application (used by the /apply page).
-router.post('/', async (req, res) => {
+router.post('/', submitRateLimiter, async (req, res) => {
   const { valid, errors } = validateApplication(req.body)
   if (!valid) {
     return res.status(400).json({ message: 'Your application has some missing or invalid fields.', errors })
@@ -49,9 +60,8 @@ router.post('/', async (req, res) => {
 })
 
 // GET /api/applications — list applications for internal review.
-// NOTE: this has no auth on it yet. Before deploying, put this behind an
-// admin login or at minimum an API-key check — see the setup notes.
-router.get('/', async (req, res) => {
+// Protected: requires a valid admin session cookie (see routes/auth.js).
+router.get('/', requireAdmin, async (req, res) => {
   const { type, status, limit = 50, page = 1 } = req.query
   const filter = {}
   if (type) filter.applicationType = type
@@ -77,7 +87,7 @@ router.get('/', async (req, res) => {
 })
 
 // GET /api/applications/:id — fetch a single application.
-router.get('/:id', async (req, res) => {
+router.get('/:id', requireAdmin, async (req, res) => {
   try {
     const application = await Application.findById(req.params.id).lean()
     if (!application) return res.status(404).json({ message: 'Application not found.' })
@@ -88,7 +98,7 @@ router.get('/:id', async (req, res) => {
 })
 
 // PATCH /api/applications/:id/status — update review status.
-router.patch('/:id/status', async (req, res) => {
+router.patch('/:id/status', requireAdmin, requireFetchHeader, async (req, res) => {
   const { status } = req.body
   const allowed = ['submitted', 'in_review', 'accepted', 'declined']
   if (!allowed.includes(status)) {
