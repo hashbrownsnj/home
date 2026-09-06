@@ -203,6 +203,23 @@ button { cursor: pointer; border: none; background: none; font: inherit; color: 
 }
 .nav-link:hover { color: var(--text); }
 .nav-link:hover::after { width: 100%; }
+.nav-link--cta {
+  color: var(--accent-light);
+  border: 1px solid var(--border-accent);
+  border-radius: var(--radius);
+  padding: 8px 16px;
+}
+.nav-link--cta::after { display: none; }
+.nav-link--cta:hover {
+  color: #fff;
+  background: var(--accent);
+  border-color: var(--accent);
+}
+.nav-link--cta.is-active {
+  background: var(--accent);
+  color: #fff;
+}
+.nav-mobile-link--cta { color: var(--accent-light); }
 .nav-status {
   font-family: var(--font-mono);
   font-size: 10px;

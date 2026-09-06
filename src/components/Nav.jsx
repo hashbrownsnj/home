@@ -1,17 +1,20 @@
 import { useState, useEffect } from 'react'
 import { motion, useReducedMotion } from 'framer-motion'
+import { Link, useLocation } from 'react-router-dom'
 
-const LINKS = [
-  { label: 'About', href: '#about' },
-  { label: 'Team', href: '#team' },
-  { label: 'Projects', href: '#projects' },
-  { label: 'Connect', href: '#connect' },
+const SECTION_LINKS = [
+  { label: 'About', hash: '#about' },
+  { label: 'Team', hash: '#team' },
+  { label: 'Projects', hash: '#projects' },
+  { label: 'Connect', hash: '#connect' },
 ]
 
 export default function Nav() {
   const [scrolled, setScrolled] = useState(false)
   const [menuOpen, setMenuOpen] = useState(false)
   const prefersReducedMotion = useReducedMotion()
+  const location = useLocation()
+  const onHome = location.pathname === '/'
 
   useEffect(() => {
     const handler = () => setScrolled(window.scrollY > 40)
@@ -28,6 +31,10 @@ export default function Nav() {
 
   const closeMenu = () => setMenuOpen(false)
 
+  // From the home page, section links stay in-page (#about). From any other
+  // route (like /apply), they need to route back to the home page first.
+  const sectionHref = (hash) => (onHome ? hash : `/${hash}`)
+
   return (
     <>
       <motion.nav
@@ -37,17 +44,23 @@ export default function Nav() {
         transition={{ duration: 0.7, ease: [0.16, 1, 0.3, 1], delay: 0.1 }}
       >
         <div className="nav-inner">
-          <a href="#top" className="nav-logo" onClick={closeMenu}>
+          <Link to="/" className="nav-logo" onClick={closeMenu}>
             HASH<span>BROWNS</span>
-          </a>
+          </Link>
 
           {/* Desktop nav */}
           <div className="nav-links">
-            {LINKS.map(({ label, href }) => (
-              <a key={label} href={href} className="nav-link">
+            {SECTION_LINKS.map(({ label, hash }) => (
+              <a key={label} href={sectionHref(hash)} className="nav-link">
                 {label}
               </a>
             ))}
+            <Link
+              to="/apply"
+              className={`nav-link nav-link--cta${location.pathname === '/apply' ? ' is-active' : ''}`}
+            >
+              Apply
+            </Link>
           </div>
 
           <div className="nav-status">
@@ -75,16 +88,19 @@ export default function Nav() {
 
       {/* Mobile full-screen overlay menu */}
       <div className={`nav-mobile-menu${menuOpen ? ' open' : ''}`} role="dialog" aria-modal="true">
-        {LINKS.map(({ label, href }) => (
+        {SECTION_LINKS.map(({ label, hash }) => (
           <a
             key={label}
-            href={href}
+            href={sectionHref(hash)}
             className="nav-mobile-link"
             onClick={closeMenu}
           >
             {label}
           </a>
         ))}
+        <Link to="/apply" className="nav-mobile-link nav-mobile-link--cta" onClick={closeMenu}>
+          Apply
+        </Link>
         <div className="nav-mobile-status">
           <span className="status-dot" />
           SYSTEM ONLINE
